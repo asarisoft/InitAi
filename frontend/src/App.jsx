@@ -56,8 +56,13 @@ export default function App() {
   useEffect(() => {
     const checkBackend = async () => {
       try {
-        const res = await fetch('http://localhost:8000/health', { signal: AbortSignal.timeout(1000) });
-        if (res.ok) {
+        let res;
+        try {
+          res = await fetch('/health', { signal: AbortSignal.timeout(1200) });
+        } catch {
+          res = await fetch('http://localhost:8000/health', { signal: AbortSignal.timeout(1200) });
+        }
+        if (res && res.ok) {
           setIsBackendOnline(true);
           const liveSkills = await apiService.getSkills();
           if (liveSkills && liveSkills.length > 0) {

@@ -1,6 +1,6 @@
 import { mockLlmService } from './mockLlmService';
 
-const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const BACKEND_URL = import.meta.env.VITE_API_URL !== undefined ? import.meta.env.VITE_API_URL : '';
 
 export const apiService = {
   /**

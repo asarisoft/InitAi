@@ -5,6 +5,19 @@ from pydantic import BaseModel
 # Load environment variables from .env file if present
 load_dotenv()
 
+raw_cors = os.getenv("CORS_ORIGINS", "*").strip()
+if raw_cors == "*" or not raw_cors:
+    parsed_cors = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://localhost:8000",
+        "http://127.0.0.1:8000",
+        "*"
+    ]
+else:
+    parsed_cors = [origin.strip() for origin in raw_cors.split(",") if origin.strip()]
+
 class Settings(BaseModel):
     PROJECT_NAME: str = "InitAI Backend API & Idea Enrichment Engine"
     VERSION: str = "2.0.0"
@@ -20,6 +33,6 @@ class Settings(BaseModel):
     GEMINI_MAX_OUTPUT_TOKENS: int = int(os.getenv("GEMINI_MAX_OUTPUT_TOKENS", "4096"))
     
     # CORS
-    CORS_ORIGINS: list[str] = ["*"]
+    CORS_ORIGINS: list[str] = parsed_cors
 
 settings = Settings()
