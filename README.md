@@ -139,6 +139,10 @@ cp backend/.env.example backend/.env
 | `HOST` | Host binding untuk FastAPI | `0.0.0.0` |
 | `PORT` | Port server backend | `8000` |
 | `GEMINI_API_KEY` | *(Opsional)* API Key Google Gemini untuk Tool Calling native | *(Kosong)* |
+| `GEMINI_MODEL` | Pilihan model Gemini (`gemini-2.0-flash`, `gemini-1.5-pro`, `gemini-1.5-flash`) | `gemini-2.0-flash` |
+| `GEMINI_TEMPERATURE` | Derajat kreativitas respons LLM (`0.0` - `1.0`) | `0.7` |
+| `GEMINI_TOP_P` | Sampling threshold untuk keragaman token | `0.95` |
+| `GEMINI_MAX_OUTPUT_TOKENS` | Batas maksimum token keluaran per generasi | `4096` |
 | `CORS_ORIGINS` | Daftar domain origin yang diizinkan | `*` |
 
 > *Catatan: Jika `GEMINI_API_KEY` tidak diisi, InitAI secara otomatis beralih ke Intelligent Local Engine tanpa ada error.*

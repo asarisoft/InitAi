@@ -20,7 +20,7 @@ def health_check():
         version=settings.VERSION,
         llm_connected=is_llm_connected,
         llm_status=llm_status_text,
-        llm_model=gemini_service.preferred_model if is_llm_connected else None,
+        llm_model=gemini_service.model_name if is_llm_connected else None,
         features=[
             "Proactive Idea Enrichment",
             "Modular Clean Architecture",

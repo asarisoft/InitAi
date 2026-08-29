@@ -9,13 +9,16 @@ logger = logging.getLogger(__name__)
 class GeminiService:
     """
     Google Gemini Native LLM & Tool Calling Service.
-    Includes active token/quota verification and real conversational reasoning.
+    Includes active token/quota verification, configurable models & hyperparameters.
     """
 
     def __init__(self):
         self.api_key = settings.GEMINI_API_KEY
+        self.model_name = settings.GEMINI_MODEL
+        self.temperature = settings.GEMINI_TEMPERATURE
+        self.top_p = settings.GEMINI_TOP_P
+        self.max_output_tokens = settings.GEMINI_MAX_OUTPUT_TOKENS
         self.client = None
-        self.preferred_model = "gemini-2.0-flash"
         self._init_client(self.api_key)
 
     def _init_client(self, api_key: str):
@@ -24,7 +27,7 @@ class GeminiService:
             try:
                 from google import genai
                 self.client = genai.Client(api_key=self.api_key)
-                logger.info("Initialized Google Gemini Client successfully.")
+                logger.info(f"Initialized Google Gemini Client successfully (Model: {self.model_name}).")
             except Exception as e:
                 logger.warning(f"Failed to initialize Gemini Client: {e}")
                 self.client = None
@@ -43,6 +46,7 @@ class GeminiService:
             return {
                 "status": "missing_key",
                 "valid": False,
+                "model": self.model_name,
                 "message": "GEMINI_API_KEY belum dikonfigurasi di backend (.env). Masukkan API Key agar analisis AI berjalan secara live."
             }
 
@@ -50,21 +54,20 @@ class GeminiService:
             from google import genai
             test_client = genai.Client(api_key=key_to_test)
             
-            # Execute a lightweight 5-token ping test to verify token quota
+            # Execute a lightweight ping test using the configured model
             response = test_client.models.generate_content(
-                model=self.preferred_model,
+                model=self.model_name,
                 contents="Halo! Jawab 'OK' jika token aktif.",
             )
             
             if response and response.text:
-                # Update current active client if custom key was tested successfully
                 if api_key:
                     self._init_client(api_key)
                 return {
                     "status": "active",
                     "valid": True,
-                    "model": self.preferred_model,
-                    "message": "Token Gemini Aktif & Siap Digunakan (Live LLM Engine Connected)."
+                    "model": self.model_name,
+                    "message": f"Token Gemini Aktif & Siap Digunakan (Model: {self.model_name})."
                 }
         except Exception as e:
             err_str = str(e).lower()
@@ -72,24 +75,35 @@ class GeminiService:
                 return {
                     "status": "quota_exhausted",
                     "valid": False,
+                    "model": self.model_name,
                     "message": "Kuota Token Gemini Habis (429 Resource Exhausted). Silakan gunakan API Key baru."
                 }
             elif "api_key_invalid" in err_str or "invalid" in err_str or "400" in err_str or "403" in err_str:
                 return {
                     "status": "invalid_key",
                     "valid": False,
+                    "model": self.model_name,
                     "message": "API Key Gemini Tidak Valid / Akses Ditolak (401/403). Periksa kembali token Anda."
+                }
+            elif "not found" in err_str or "is not supported" in err_str:
+                return {
+                    "status": "invalid_model",
+                    "valid": False,
+                    "model": self.model_name,
+                    "message": f"Model '{self.model_name}' tidak ditemukan atau belum didukung. Coba ganti ke 'gemini-2.0-flash' di .env."
                 }
             else:
                 return {
                     "status": "error",
                     "valid": False,
+                    "model": self.model_name,
                     "message": f"Gagal terhubung ke Gemini: {str(e)[:180]}"
                 }
 
         return {
             "status": "error",
             "valid": False,
+            "model": self.model_name,
             "message": "Koneksi Gemini tidak mengembalikan respons yang valid."
         }
 
@@ -102,7 +116,7 @@ class GeminiService:
         conversation_history: List[Any]
     ) -> Optional[Dict[str, Any]]:
         """
-        Executes real Gemini LLM reasoning for the architectural interview.
+        Executes real Gemini LLM reasoning using configured model & generation parameters.
         """
         if not self.is_available():
             return None
@@ -135,10 +149,13 @@ class GeminiService:
                 )
 
                 response = self.client.models.generate_content(
-                    model=self.preferred_model,
+                    model=self.model_name,
                     contents=prompt,
                     config=types.GenerateContentConfig(
                         system_instruction=system_instruction,
+                        temperature=self.temperature,
+                        top_p=self.top_p,
+                        max_output_tokens=self.max_output_tokens,
                         response_mime_type="application/json"
                     )
                 )
@@ -162,10 +179,13 @@ class GeminiService:
                 )
 
                 response = self.client.models.generate_content(
-                    model=self.preferred_model,
+                    model=self.model_name,
                     contents=prompt,
                     config=types.GenerateContentConfig(
-                        system_instruction=system_instruction
+                        system_instruction=system_instruction,
+                        temperature=self.temperature,
+                        top_p=self.top_p,
+                        max_output_tokens=self.max_output_tokens
                     )
                 )
 
@@ -184,10 +204,13 @@ class GeminiService:
                 )
 
                 response = self.client.models.generate_content(
-                    model=self.preferred_model,
+                    model=self.model_name,
                     contents=prompt,
                     config=types.GenerateContentConfig(
-                        system_instruction=system_instruction
+                        system_instruction=system_instruction,
+                        temperature=self.temperature,
+                        top_p=self.top_p,
+                        max_output_tokens=self.max_output_tokens
                     )
                 )
 
