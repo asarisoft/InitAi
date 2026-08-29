@@ -1,0 +1,60 @@
+import React, { useEffect, useRef } from 'react';
+import MessageItem from './MessageItem';
+import SkillGrid from './SkillGrid';
+import DownloadSection from './DownloadSection';
+
+export default function ChatBox({
+  messages,
+  isTyping,
+  currentStep,
+  skills,
+  onToggleSkill,
+  onAddCustomSkill,
+  onConfirmSkills,
+  projectData
+}) {
+  const bottomRef = useRef(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isTyping, currentStep, skills]);
+
+  return (
+    <div className="chat-history-scroll">
+      {messages.map((msg, index) => (
+        <MessageItem key={index} message={msg} />
+      ))}
+
+      {isTyping && (
+        <div className="message-row ai">
+          <div className="avatar ai">⚡</div>
+          <div className="bubble typing-indicator">
+            <span className="typing-dot"></span>
+            <span className="typing-dot"></span>
+            <span className="typing-dot"></span>
+          </div>
+        </div>
+      )}
+
+      {/* Embedded interactive SkillGrid when reaching Step 3 */}
+      {currentStep === 3 && (
+        <SkillGrid
+          skills={skills}
+          onToggleSkill={onToggleSkill}
+          onAddCustomSkill={onAddCustomSkill}
+          onConfirmSkills={onConfirmSkills}
+        />
+      )}
+
+      {/* Embedded Download Section when reaching Step 4 */}
+      {currentStep === 4 && (
+        <DownloadSection
+          projectData={projectData}
+          skills={skills}
+        />
+      )}
+
+      <div ref={bottomRef} style={{ height: '1px' }} />
+    </div>
+  );
+}
