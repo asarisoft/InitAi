@@ -58,7 +58,7 @@ export class MockLlmService {
             "Spesifikasi inti, batasan MVP, dan profil pengguna telah berhasil dirumuskan ke dalam draf `prd.md`.\n\n" +
             "---\n\n" +
             "### 🎨 **Tahap 2: Referensi Desain & UI/UX System Specification**\n" +
-            "Silakan unggah **screenshot referensi UI / mockup**, masukkan **URL referensi visual** (*pacdora.com, figma.com, linear.app*), atau pilih preset gaya visual pada panel interaktif di bawah.",
+            "Silakan unggah **screenshot referensi UI / mockup**, masukkan **URL referensi visual** (*figma.com, linear.app, raycast.com*), atau pilih preset gaya visual pada panel interaktif di bawah.",
           nextStep: 2,
           nextInterviewTurn: 1,
           isStepComplete: true,

@@ -37,7 +37,7 @@ ${prdDetails}
 - **Frontend:** ${techStack.includes(',') ? techStack.split(',')[0].trim() : techStack} (Vite + ReactJS)
 - **Backend:** FastAPI (Python 3.11+, Asynchronous, Uvicorn)
 - **Infrastructure:** Docker multi-stage & Docker Compose
-- **Design Tokens:** Modern SaaS Web Studio (Pacdora/Figma dark-mode aesthetic)
+- **Design Tokens:** Modern SaaS Web Studio (Figma/Linear dark-mode aesthetic)
 
 ## 6. Acceptance Criteria
 - [x] Antarmuka web bebas dari console error.
@@ -83,12 +83,12 @@ ${skillEntries}
 
 export function generateSystemDesignMarkdown(projectData) {
   const title = projectData.projectName || "Project InitAI";
-  const designRef = projectData.designGuidelines || "Modern Dark/Light SaaS Studio (Pacdora/Figma style, Glassmorphism, 60fps Micro-interactions)";
+  const designRef = projectData.designGuidelines || "Modern Dark/Light SaaS Studio (Figma/Linear style, Glassmorphism, 60fps Micro-interactions)";
 
   return `# System Design & Architecture Blueprint — ${title}
 
 ## 1. Architectural Overview
-Sistem mengadopsi pola arsitektur **Modern Web Studio SaaS** (terinspirasi dari platform terkemuka seperti Pacdora & Figma) yang menggabungkan rendering antarmuka reaktif di sisi klien dengan engine LLM orkestrasi asinkron di sisi backend.
+Sistem mengadopsi pola arsitektur **Modern Web Studio SaaS** (terinspirasi dari platform terkemuka seperti Figma & Linear) yang menggabungkan rendering antarmuka reaktif di sisi klien dengan engine LLM orkestrasi asinkron di sisi backend.
 
 \`\`\`
 ┌─────────────────────────────────────────────────────────────┐

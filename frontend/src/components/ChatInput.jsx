@@ -9,13 +9,13 @@ export default function ChatInput({ onSendMessage, disabled, currentStep }) {
     switch (currentStep) {
       case 1:
         return [
-          "B2B SaaS Web Studio for 3D packaging mockups and CAD dielines",
+          "B2B SaaS Web Studio for Automated Software Architectures",
           "Autonomous Code Review & Security Analysis Agent for GitHub",
           "Real-time Collaborative Whiteboard & Design System Studio"
         ];
       case 2:
         return [
-          "Pacdora & Figma dark-mode aesthetic with zinc slate palette and 60fps micro-interactions",
+          "Modern SaaS dark-mode aesthetic with zinc slate palette and 60fps micro-interactions",
           "Linear-inspired minimal interface with subtle 1px border lines and monospace accents",
           "High-contrast obsidian theme with electric indigo and emerald status tokens"
         ];
@@ -90,7 +90,7 @@ export default function ChatInput({ onSendMessage, disabled, currentStep }) {
               currentStep === 1
                 ? "Describe your product vision, target persona, or problem statement..."
                 : currentStep === 2
-                ? "Provide reference URLs (e.g. pacdora.com, figma.com) or UI design guidelines..."
+                ? "Provide reference URLs (e.g. figma.com, linear.app) or UI design guidelines..."
                 : currentStep === 3
                 ? "Provide additional skills or instructions..."
                 : "Project initialization completed. Review and download artifacts above."

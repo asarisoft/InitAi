@@ -70,7 +70,7 @@ Dokumen ini berisi daftar skill dan perkakas terverifikasi untuk proyek **{paylo
     sysdesign_content = f"""# System Design & Architecture Blueprint — {payload.project_name}
 
 ## 1. High-Level Architecture Overview
-Sistem mengadopsi pola arsitektur **Modern Web Studio SaaS** (terinspirasi dari platform terkemuka seperti Pacdora & Figma) yang memisahkan client presentation tier dan asynchronous backend service.
+Sistem mengadopsi pola arsitektur **Modern Web Studio SaaS** (terinspirasi dari platform terkemuka seperti Figma & Linear) yang memisahkan client presentation tier dan asynchronous backend service.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐

@@ -1,4 +1,4 @@
-# InitAI — AI Agent Studio & System Architect
+# InitAI — AI Agentic Project Architect & Studio
 
 <div align="center">
 
@@ -8,9 +8,9 @@
 ![Docker](https://img.shields.io/badge/Container-Docker%20Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![WCAG](https://img.shields.io/badge/Accessibility-WCAG%202.1%20AA-10B981?style=for-the-badge)
 
-**Platform SaaS Web Studio Cerdas untuk Otomasi Pembuatan PRD, Kurasi Skill Agen AI, dan Blueprint Arsitektur Sistem dalam 3 Berkas Markdown Siap Pakai.**
+**Platform SaaS Studio Cerdas untuk Otomasi Pembuatan PRD, Kurasi Skill Agen AI, dan Blueprint Arsitektur Sistem dalam 4 Berkas Markdown Siap Pakai.**
 
-[Panduan Memulai](#-panduan-menjalankan-aplikasi) • [Fitur Utama](#-fitur-utama) • [Arsitektur Sistem](#-arsitektur-sistem) • [Pengujian](#-pengujian-otomatis)
+[Panduan Memulai](#-panduan-menjalankan-aplikasi) • [Fitur Utama](#-fitur-utama) • [Alur Wizard](#-alur-kerja-3-tahap-interaktif) • [Arsitektur Sistem](#-arsitektur-sistem) • [Pengujian](#-pengujian-otomatis)
 
 </div>
 
@@ -18,85 +18,79 @@
 
 ## 🌟 Ikhtisar Proyek
 
-**InitAI** dirancang sebagai *Architectural Copilot* bergaya **SaaS Web Studio** (terinspirasi dari platform modern seperti *Pacdora*, *Figma*, dan *Linear*). InitAI memandu pengguna melalui wawancara interaktif multi-turn untuk mengubah ide produk yang masih abstrak menjadi spesifikasi teknis tingkat produksi (*production-grade*), lengkap dengan dokumen arsitektur dan matriks perkakas (*toolchain*).
+**InitAI** adalah *Agentic Architectural Copilot* berbasis web yang dirancang untuk mengeliminasi friksi dalam memulai pengembangan aplikasi perangkat lunak (*software initiation*). Melalui wawancara interaktif berbasis AI, InitAI memandu pengguna menyusun spesifikasi teknis tingkat produksi (*production-grade*), mengekstrak panduan desain antarmuka, mengurasi kemampuan agen cerdas, dan langsung mengekspor **4 berkas artefak markdown lengkap**.
 
 ---
 
 ## ✨ Fitur Utama
 
 ### 1. 💡 Proactive Idea Enrichment Engine
-* AI tidak hanya mencatat input user, melainkan secara aktif membedah problem statement dan menawarkan **3-4 variasi konsep produk & arsitektur MVP** yang bisa langsung diklik pengguna.
-* Mengajukan pertanyaan pemantik berbobot untuk aspek kritis yang sering terlewatkan (Target Persona, Edge Cases, Data Model).
+* AI menganalisis ide produk secara proaktif dan menyajikan **3-4 variasi konsep arsitektur & MVP** dalam bentuk kartu interaktif yang bisa langsung diklik.
+* Mempertegas target persona (B2B, B2C, DevTools, Enterprise), batasan cakupan MVP, dan arsitektur data.
 
-### 2. 🎨 In-Chat Visual Reference & Image Uploader (Tahap 2)
-* Panel dropzone interaktif **langsung di dalam riwayat chat**.
-* Mendukung upload screenshot mockups, wireframe Figma, moodboard, dan color palette (PNG, JPG, WebP, SVG).
-* Dilengkapi *Thumbnail Gallery*, *Modal Zoom Preview*, dan preset gaya arsitektur populer (*Pacdora 3D Studio, Linear Minimalist, Raycast Glassmorphism*).
+### 2. 🎨 In-Chat Design Reference & Visual Asset Dropzone (Tahap 2)
+* Panel dropzone terintegrasi **langsung di dalam percakapan chat**.
+* Unggah screenshot mockups, wireframe, atau moodboard desain visual (PNG, JPG, WebP, SVG).
+* Dilengkapi *Gallery Preview*, modal zoom resolusi penuh, dan pilihan preset token desain modern.
 
-### 3. ⚡ Curated Agent Skill Matrix & Trend Search (Tahap 3)
-* Grid kartu interaktif dengan 9 skill rekayasa perangkat lunak standar (Brainstorming, Architecture, Code Review, Security, dsb.).
+### 3. ⚡ Matriks Skill Agen AI & Penelusuran Tren GitHub (Tahap 3)
+* Katalog 9 skill rekayasa perangkat lunak standar (Brainstorming, Architecture, Code Review, Security, dsb.).
 * Filter kategori instan (*Development, UI/UX, Code Review, Security, DevOps*).
-* Penambahan skill kustom dengan simulasi penelusuran tren teknologi terbaru.
-* Tautan repositori GitHub resmi dan daftar keunggulan fitur pada setiap kartu.
+* Penambahan skill kustom secara live dengan sintesis tren repositori GitHub langsung dari backend.
 
-### 4. 📦 Zero-Friction Markdown Artifact Deliverables (Tahap 4)
-Menghasilkan 3 berkas artefak markdown yang dapat diunduh langsung via in-memory Blob URL atau disalin dengan 1-klik:
+### 4. 📦 4 Berkas Artefak Deliverables (Tahap 4)
+Menghasilkan 4 berkas markdown terstruktur yang dapat diunduh langsung via Blob URL atau disalin dengan 1-klik:
 * **`prd.md`:** Executive Summary, User Personas, MVP Scope, dan Acceptance Criteria.
-* **`list_skills.md`:** Daftar skill terverifikasi lengkap dengan link GitHub, keunggulan, dan panduan instalasi.
+* **`list_skills.md`:** Matriks skill pilihan dengan tautan repositori GitHub & panduan instalasi.
 * **`systemdesign.md`:** Cetak biru arsitektur sistem, UI Design Tokens, dan diagram aliran data.
+* **`readme.md`:** Dokumentasi utama proyek, ringkasan tech stack, dan panduan deployment.
 
-### 5. 🛡️ Zero-Backend Standalone Capability
-* Dilengkapi **Mock AI Engine cerdas di sisi browser**, memungkinkan aplikasi berjalan 100% secara lokal tanpa ketergantungan koneksi backend saat diperlukan.
+### 5. 🛡️ Dual-Mode Hybrid Architecture
+* **Online Mode:** Terhubung langsung ke **FastAPI Backend** dengan dukungan integrasi Tool Calling Google Gemini.
+* **Offline / Standalone Fallback:** Berjalan 100% di browser dengan *Intelligent Local Mock Engine* jika backend offline.
 
 ---
 
-## 📐 Arsitektur Sistem
+## 🔄 Alur Kerja 3 Tahap Interaktif
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                 Client Browser (React 18 + Vite)            │
-│  - SaaS Studio Layout: Stepper Sidebar + Canvas + Grid      │
-│  - In-Chat Dropzone (Visual Image & Mockup Upload)          │
-│  - Zero-Backend Fallback Engine (Local Intelligent Mock)    │
-│  - In-Memory Blob Stream Exporter & Modal Code Viewer       │
-└──────────────────────────────┬──────────────────────────────┘
-                               │ REST / JSON (HTTP & CORS)
-┌──────────────────────────────▼──────────────────────────────┐
-│                 FastAPI Asynchronous Backend                │
-│  - Proactive Idea Enrichment & Multi-turn Conversational    │
-│  - AI Skill Trend Synthesizer & Tool Calling Registry       │
-│  - Pydantic v2 Schema Contract Validation                   │
-│  - Swagger UI Documentation (`/docs`)                       │
-└─────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────┐
+│  TAHAP 1: PRD INTERVIEW & IDEA ENRICHMENT                                      │
+│  User input konsep ──► AI mengusulkan 3 variasi MVP ──► PRD matang tersintesis │
+└──────────────────────────────────────┬─────────────────────────────────────────┘
+                                       ▼
+┌────────────────────────────────────────────────────────────────────────────────┐
+│  TAHAP 2: VISUAL DESIGN REFERENCE & UI TOKENS                                  │
+│  Unggah screenshot mockup / URL referensi ──► Ekstraksi Design Tokens WCAG AA  │
+└──────────────────────────────────────┬─────────────────────────────────────────┘
+                                       ▼
+┌────────────────────────────────────────────────────────────────────────────────┐
+│  TAHAP 3: CURATED AGENT SKILL MATRIX                                           │
+│  Pilih / filter 9 skill standar + Tambah skill kustom tren GitHub live         │
+└──────────────────────────────────────┬─────────────────────────────────────────┘
+                                       ▼
+┌────────────────────────────────────────────────────────────────────────────────┐
+│  TAHAP 4: DELIVERABLE ARTIFACT EXPORT                                          │
+│  Download 4 Berkas: prd.md • list_skills.md • systemdesign.md • readme.md      │
+└────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
 ## 🚀 Panduan Menjalankan Aplikasi
 
-### Opsi 1: Menggunakan Launcher Script (`run.sh` — Paling Praktis)
-Tersedia script launcher interaktif satu-perintah:
+### Opsi 1: Menggunakan Launcher Script (`./run.sh` — Direkomendasikan)
 ```bash
 ./run.sh
 ```
-Pilih opsi:
-* `1` — **Frontend Standalone** (Paling cepat, hanya butuh Node.js).
-* `2` — **Full-Stack Lokal** (FastAPI Backend + React Frontend dengan *graceful shutdown* `Ctrl+C`).
-* `3` — **Docker Compose** (Containerized Frontend & Backend).
+Pilihan menu:
+* `1` — **Frontend Standalone** (Jalankan client React di `http://localhost:5173`).
+* `2` — **Full-Stack Local** (Jalankan FastAPI Backend + React Frontend secara simultan).
+* `3` — **Docker Compose** (Jalankan seluruh service dalam container Docker).
 
 ---
 
-### Opsi 2: Menjalankan Frontend Standalone
-```bash
-cd frontend
-npm install
-npm run dev
-```
-Buka di browser: 👉 **`http://localhost:5173`**
-
----
-
-### Opsi 3: Menjalankan Full-Stack Lokal secara Manual
+### Opsi 2: Menjalankan Full-Stack Lokal secara Manual
 
 #### 1. Jalankan Backend (FastAPI):
 ```bash
@@ -106,45 +100,64 @@ source venv/bin/activate
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 ```
-* API Docs (Swagger): `http://localhost:8000/docs`
-* Health Check: `http://localhost:8000/health`
+* **API Docs (Swagger UI):** `http://localhost:8000/docs`
+* **Health Check:** `http://localhost:8000/health`
 
-#### 2. Jalankan Frontend (React):
+#### 2. Jalankan Frontend (React 18 + Vite):
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
-* Frontend Studio: `http://localhost:5173`
+* **Frontend Web Studio:** `http://localhost:5173`
 
 ---
 
-### Opsi 4: Menjalankan dengan Docker Compose
+### Opsi 3: Menjalankan dengan Docker Compose
 ```bash
 docker compose up --build
 ```
 
 ---
 
+## 🔑 Konfigurasi Environment (`.env`)
+
+Backend menyediakan file konfigurasi template `.env.example`:
+```bash
+cp backend/.env.example backend/.env
+```
+
+| Variabel | Deskripsi | Default |
+| :--- | :--- | :--- |
+| `HOST` | Host binding untuk FastAPI | `0.0.0.0` |
+| `PORT` | Port server backend | `8000` |
+| `GEMINI_API_KEY` | *(Opsional)* API Key Google Gemini untuk Tool Calling native | *(Kosong)* |
+| `CORS_ORIGINS` | Daftar domain origin yang diizinkan | `*` |
+
+> *Catatan: Jika `GEMINI_API_KEY` tidak diisi, InitAI secara otomatis beralih ke Intelligent Local Engine tanpa ada error.*
+
+---
+
 ## 🧪 Pengujian Otomatis
 
-Backend dilengkapi unit & integration test suite berbasis `pytest`:
+Backend dilengkapi test suite berbasis `pytest` dengan 8 skenario pengujian unit & integrasi:
 
 ```bash
 cd backend
 ./venv/bin/pytest -v test_backend.py
 ```
 
-### Hasil Pengujian (100% Lulus):
+### Hasil Test Suite:
 ```text
-test_backend.py::test_health_check PASSED                                [ 14%]
-test_backend.py::test_get_skills PASSED                                  [ 28%]
-test_backend.py::test_chat_step_1_idea_enrichment PASSED                 [ 42%]
-test_backend.py::test_chat_step_1_turn_2_completion PASSED               [ 57%]
-test_backend.py::test_chat_step_2_design_reference PASSED                [ 71%]
-test_backend.py::test_chat_step_3_skill_confirmation PASSED              [ 85%]
-test_backend.py::test_generate_files PASSED                              [100%]
-========================= 7 passed in 0.21s =========================
+test_backend.py::test_health_check PASSED                    [ 12%]
+test_backend.py::test_get_skills PASSED                      [ 25%]
+test_backend.py::test_search_skill PASSED                    [ 37%]
+test_backend.py::test_chat_step_1_idea_enrichment PASSED     [ 50%]
+test_backend.py::test_chat_step_1_turn_2_completion PASSED   [ 62%]
+test_backend.py::test_chat_step_2_design_reference PASSED    [ 75%]
+test_backend.py::test_chat_step_3_skill_confirmation PASSED  [ 87%]
+test_backend.py::test_generate_files PASSED                  [100%]
+========================= 8 passed in 0.19s =========================
 ```
 
 ---
@@ -156,42 +169,52 @@ INITAI/
 ├── run.sh                          # Interactive multi-mode launcher
 ├── docker-compose.yml              # Docker multi-service composition
 ├── README.md                       # Dokumentasi resmi proyek
-├── prompt.md                       # Spesifikasi dasar kebutuhan sistem
-├── systemdesign.md                 # Standar arsitektur & design tokens
+├── .env.example                    # Template environment variables
 ├── backend/
 │   ├── Dockerfile                  # Container definition Python 3.11
 │   ├── requirements.txt            # Dependensi backend & testing
-│   ├── main.py                     # Core FastAPI app, routers, & enrichment logic
-│   └── test_backend.py             # Automated pytest suite
+│   ├── test_backend.py             # Automated pytest suite (8 tests)
+│   ├── main.py                     # Entrypoint & Application Factory
+│   └── app/
+│       ├── core/config.py          # App settings & dotenv loader
+│       ├── schemas/models.py       # Pydantic v2 data models
+│       ├── services/
+│       │   ├── enrichment.py       # Proactive idea enrichment logic
+│       │   ├── gemini_service.py   # Google Gemini Tool Calling integration
+│       │   ├── skills_service.py   # Skill dataset & live search synthesis
+│       │   └── generator.py        # 4 markdown files generator
+│       └── routers/
+│           ├── health.py           # GET /health
+│           ├── skills.py           # GET /skills, POST /skills/search
+│           ├── chat.py             # POST /chat
+│           └── files.py            # POST /generate-files
 └── frontend/
-    ├── Dockerfile                  # Container definition Node.js / Vite
     ├── package.json                # React 18 & Vite configuration
     ├── vite.config.js              # Vite server & build settings
-    ├── index.html                  # HTML entry with Plus Jakarta Sans & JetBrains Mono
+    ├── index.html                  # HTML entry with custom typography
     └── src/
         ├── App.jsx                 # Studio layout state orchestrator
-        ├── main.jsx                # React DOM entry
         ├── index.css               # SaaS Studio Design Tokens (Dark/Light Mode)
         ├── components/
-        │   ├── Header.jsx          # Studio header bar with breadcrumb & theme toggle
-        │   ├── Sidebar.jsx         # Vertical track stepper & session summary
+        │   ├── Header.jsx          # Studio header bar with live status indicator
+        │   ├── Sidebar.jsx         # Stepper track & project summary
         │   ├── ChatBox.jsx         # Conversation timeline & embedded panels
         │   ├── MessageItem.jsx     # Markdown renderer with Idea Enrichment cards
         │   ├── ChatInput.jsx       # Autosize prompt composer & action pills
         │   ├── DesignRefUploader.jsx# In-chat screenshot upload & visual presets
-        │   ├── SkillGrid.jsx       # Interactive skill matrix & trend search
-        │   ├── DownloadSection.jsx # Artifact delivery cards & live preview modal
+        │   ├── SkillGrid.jsx       # Interactive skill matrix & live search
+        │   ├── DownloadSection.jsx # 4 Artifact delivery cards & live preview
         │   ├── ThemeToggle.jsx     # Instant Light/Dark switcher
         │   └── Icons.jsx           # Clean bespoke SVG icon library
         ├── services/
-        │   ├── mockLlmService.js   # Client-side standalone intelligent engine
-        │   └── apiService.js       # Resilient REST API client with auto-fallback
+        │   ├── apiService.js       # Live REST API client with auto-fallback
+        │   └── mockLlmService.js   # Client-side standalone intelligent engine
         └── utils/
             ├── defaultSkills.js    # 9 curated AI agent engineering skills
-            └── markdownParser.js   # Production-grade markdown generator & blob exporter
+            └── markdownParser.js   # 4 Markdown deliverables & Blob exporter
 ```
 
 ---
 
-## 📄 Lisensi & Kontributor
+## 📄 Lisensi & Hak Cipta
 Dikembangkan untuk repositori [asarisoft/InitAi](https://github.com/asarisoft/InitAi) oleh **ImamAsari** ([@asarisoft](https://github.com/asarisoft)).

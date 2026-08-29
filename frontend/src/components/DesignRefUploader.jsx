@@ -2,16 +2,16 @@ import React, { useState, useRef } from 'react';
 import { IconUploadCloud, IconImage, IconTrash, IconCheck, IconEye, IconSparkles } from './Icons';
 
 export default function DesignRefUploader({ onConfirmDesign, initialText = '' }) {
-  const [designText, setDesignText] = useState(initialText || 'Modern Dark SaaS Web Studio (Pacdora & Figma inspired, glassmorphism, 60fps micro-interactions)');
+  const [designText, setDesignText] = useState(initialText || 'Modern Dark SaaS Web Studio (Linear & Figma inspired, glassmorphism, 60fps micro-interactions)');
   const [uploadedImages, setUploadedImages] = useState([]);
   const [previewModalImg, setPreviewModalImg] = useState(null);
   const fileInputRef = useRef(null);
 
   const stylePresets = [
-    "Pacdora & Figma 3D Web Studio (Obsidian Canvas + Electric Indigo)",
+    "Modern SaaS Studio (Obsidian Canvas + Electric Indigo + Emerald Tokens)",
     "Linear Minimalist (Subtle 1px Borders, JetBrains Mono, Zinc 900)",
     "Raycast / Arc Clean SaaS (Glassmorphism, High Contrast, WCAG AA)",
-    "Cyberpunk / Neon Glow (Deep Obsidian + Electric Cyan & Magenta)"
+    "Developer Dark Dashboard (Deep Slate + Amber & Cyan Accents)"
   ];
 
   const handleFileChange = (e) => {
@@ -235,7 +235,7 @@ export default function DesignRefUploader({ onConfirmDesign, initialText = '' })
             style={{ width: '100%', minHeight: '60px', resize: 'vertical' }}
             value={designText}
             onChange={(e) => setDesignText(e.target.value)}
-            placeholder="Contoh: pacdora.com, figma.com/community/... atau deskripsi gaya: Dark mode elegan, glassmorphism, accent purple glow..."
+            placeholder="Contoh: figma.com/@community/..., linear.app atau deskripsi gaya: Dark mode elegan, glassmorphism, accent indigo glow..."
           />
         </div>
 

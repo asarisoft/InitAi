@@ -49,7 +49,7 @@ class GenerateFilesRequest(BaseModel):
     prd_summary: str = Field(..., min_length=1, max_length=10000)
     target_users: Optional[str] = Field("Full-Stack Developers, Product Managers, and AI Engineers", max_length=500)
     tech_stack: Optional[str] = Field("React 18, FastAPI, Docker, TailwindCSS", max_length=500)
-    design_references: Optional[str] = Field("Modern Dark/Light SaaS Studio (Pacdora/Figma style)", max_length=1000)
+    design_references: Optional[str] = Field("Modern Dark/Light SaaS Studio (Figma/Linear style)", max_length=1000)
     selected_skills: List[SkillItem] = Field(default_factory=list)
     design_images: Optional[List[Dict[str, Any]]] = Field(default_factory=list)
 

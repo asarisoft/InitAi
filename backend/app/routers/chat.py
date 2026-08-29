@@ -47,7 +47,7 @@ async def handle_chat_message(req: ChatRequest):
                 "Spesifikasi inti, persona pengguna, dan batasan cakupan MVP telah berhasil disintesis ke dalam rancangan `prd.md`.\n\n"
                 "--- \n\n"
                 "### 🎨 **Tahap 2: Referensi Desain & UI/UX System Specification**\n"
-                "Silakan unggah **screenshot referensi UI / mockup**, masukkan **URL referensi visual** (*pacdora.com, figma.com, linear.app*), atau pilih preset gaya visual pada panel interaktif di bawah."
+                "Silakan unggah **screenshot referensi UI / mockup**, masukkan **URL referensi visual** (*figma.com, linear.app, raycast.com*), atau pilih preset gaya visual pada panel interaktif di bawah."
             )
             return ChatResponse(
                 reply=reply,

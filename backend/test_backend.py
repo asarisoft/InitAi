@@ -64,7 +64,7 @@ def test_chat_step_1_turn_2_completion():
 def test_chat_step_2_design_reference():
     # Step 2: Design reference input
     payload = {
-        "message": "pacdora.com and figma dark mode",
+        "message": "linear.app and figma dark mode",
         "step": 2,
         "interview_turn": 1,
         "conversation_history": []
