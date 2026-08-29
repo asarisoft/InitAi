@@ -3,8 +3,8 @@ from typing import Optional
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
-# Load environment variables from .env file if present
-load_dotenv()
+# Load environment variables from .env file with override enabled
+load_dotenv(override=True)
 
 raw_cors = os.getenv("CORS_ORIGINS", "*").strip()
 if raw_cors == "*" or not raw_cors:
