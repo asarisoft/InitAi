@@ -18,6 +18,16 @@ def test_get_skills():
     assert len(skills) >= 9
     assert any(s["id"] == "brainstorming" for s in skills)
 
+def test_search_skill():
+    payload = {"query": "Next.js Vector Indexer", "category": "Development"}
+    response = client.post("/skills/search", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert "Next.js Vector Indexer" in data["name"]
+    assert "https://github.com/topics/" in data["github_url"]
+    assert len(data["advantages"]) >= 2
+    assert data["selected"] is True
+
 def test_chat_step_1_idea_enrichment():
     # Turn 1: User gives a raw idea -> Backend enriches with 3 options
     payload = {

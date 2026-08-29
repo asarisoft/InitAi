@@ -18,6 +18,10 @@ class SkillItem(BaseModel):
     install_guide: Optional[str] = None
     selected: bool = True
 
+class SkillSearchRequest(BaseModel):
+    query: str = Field(..., min_length=1, max_length=150, description="Nama skill atau perkakas yang dicari")
+    category: Optional[str] = Field("Development", max_length=50)
+
 class ChatMessage(BaseModel):
     role: str
     content: str

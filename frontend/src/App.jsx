@@ -48,12 +48,18 @@ export default function App() {
     localStorage.setItem('initai_theme', theme);
   }, [theme]);
 
-  // Ping backend status
+  // Ping backend status & sync initial skills
   useEffect(() => {
     const checkBackend = async () => {
       try {
         const res = await fetch('http://localhost:8000/health', { signal: AbortSignal.timeout(1000) });
-        if (res.ok) setIsBackendOnline(true);
+        if (res.ok) {
+          setIsBackendOnline(true);
+          const liveSkills = await apiService.getSkills();
+          if (liveSkills && liveSkills.length > 0) {
+            setSkills(liveSkills);
+          }
+        }
       } catch (e) {
         setIsBackendOnline(false);
       }

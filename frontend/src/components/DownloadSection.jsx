@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   generatePrdMarkdown,
   generateListSkillsMarkdown,
@@ -6,16 +6,31 @@ import {
   generateReadmeMarkdown,
   downloadMarkdownFile
 } from '../utils/markdownParser';
+import { apiService } from '../services/apiService';
 import { IconDownload, IconEye, IconFileText, IconCopy, IconCheck } from './Icons';
 
 export default function DownloadSection({ projectData, skills }) {
   const [previewFile, setPreviewFile] = useState(null);
   const [copiedFileName, setCopiedFileName] = useState(null);
+  const [backendFiles, setBackendFiles] = useState(null);
 
-  const prdContent = generatePrdMarkdown(projectData);
-  const skillsContent = generateListSkillsMarkdown(projectData, skills);
-  const sysDesignContent = generateSystemDesignMarkdown(projectData);
-  const readmeContent = generateReadmeMarkdown(projectData, skills);
+  // Sync official markdown from backend /generate-files
+  useEffect(() => {
+    let isMounted = true;
+    const fetchBackendFiles = async () => {
+      const res = await apiService.generateFiles({ ...projectData, skills });
+      if (res && isMounted) {
+        setBackendFiles(res);
+      }
+    };
+    fetchBackendFiles();
+    return () => { isMounted = false; };
+  }, [projectData, skills]);
+
+  const prdContent = backendFiles?.prdMd || generatePrdMarkdown(projectData);
+  const skillsContent = backendFiles?.listSkillsMd || generateListSkillsMarkdown(projectData, skills);
+  const sysDesignContent = backendFiles?.systemDesignMd || generateSystemDesignMarkdown(projectData);
+  const readmeContent = backendFiles?.readmeMd || generateReadmeMarkdown(projectData, skills);
 
   const files = [
     {
@@ -71,7 +86,7 @@ export default function DownloadSection({ projectData, skills }) {
             <p>Production-grade Markdown deliverables ready for engineering handoff</p>
           </div>
           <span className="status-pill" style={{ background: 'var(--brand-surface)', color: 'var(--brand-primary)', borderColor: 'var(--brand-border)' }}>
-            ✓ 4 Files Packaged
+            ✓ 4 Files Packaged {backendFiles ? '(Live Backend Sync)' : ''}
           </span>
         </div>
 
