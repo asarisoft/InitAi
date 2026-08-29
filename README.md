@@ -138,20 +138,21 @@ cp backend/.env.example backend/.env
 | :--- | :--- | :--- |
 | `HOST` | Host binding untuk FastAPI | `0.0.0.0` |
 | `PORT` | Port server backend | `8000` |
-| `GEMINI_API_KEY` | *(Opsional)* API Key Google Gemini untuk Tool Calling native | *(Kosong)* |
-| `GEMINI_MODEL` | Pilihan model Gemini (`gemini-2.0-flash`, `gemini-1.5-pro`, `gemini-1.5-flash`) | `gemini-2.0-flash` |
-| `GEMINI_TEMPERATURE` | Derajat kreativitas respons LLM (`0.0` - `1.0`) | `0.7` |
-| `GEMINI_TOP_P` | Sampling threshold untuk keragaman token | `0.95` |
-| `GEMINI_MAX_OUTPUT_TOKENS` | Batas maksimum token keluaran per generasi | `4096` |
+| `LLM_PROVIDER` | Prioritas provider LLM (`auto`, `gemini`, `openai`) | `auto` |
+| `GEMINI_API_KEY` | *(Opsional)* API Key Google Gemini (Free tier) | *(Kosong)* |
+| `GEMINI_MODEL` | Pilihan model Gemini (`gemini-2.5-flash`, `gemini-1.5-flash`, `gemini-2.5-pro`) | `gemini-2.5-flash` |
+| `OPENAI_API_KEY` | *(Opsional)* API Key OpenAI (`sk-...`) | *(Kosong)* |
+| `OPENAI_MODEL` | Pilihan model OpenAI (`gpt-4o-mini`, `gpt-4o`, `o3-mini`) | `gpt-4o-mini` |
+| `OPENAI_BASE_URL` | *(Opsional)* Custom endpoint URL (OpenRouter, Azure, Ollama) | *(Kosong)* |
 | `CORS_ORIGINS` | Daftar domain origin yang diizinkan | `*` |
 
-> *Catatan: Jika `GEMINI_API_KEY` tidak diisi, InitAI secara otomatis beralih ke Intelligent Local Engine tanpa ada error.*
+> *Catatan: Jika API Key tidak diisi, InitAI secara otomatis beralih ke Intelligent Local Engine tanpa error.*
 
 ---
 
 ## 🧪 Pengujian Otomatis
 
-Backend dilengkapi test suite berbasis `pytest` dengan 8 skenario pengujian unit & integrasi:
+Backend dilengkapi test suite berbasis `pytest` dengan 13 skenario pengujian unit & integrasi multi-provider:
 
 ```bash
 cd backend
@@ -160,15 +161,20 @@ cd backend
 
 ### Hasil Test Suite:
 ```text
-test_backend.py::test_health_check PASSED                    [ 12%]
-test_backend.py::test_get_skills PASSED                      [ 25%]
-test_backend.py::test_search_skill PASSED                    [ 37%]
-test_backend.py::test_chat_step_1_idea_enrichment PASSED     [ 50%]
-test_backend.py::test_chat_step_1_turn_2_completion PASSED   [ 62%]
-test_backend.py::test_chat_step_2_design_reference PASSED    [ 75%]
-test_backend.py::test_chat_step_3_skill_confirmation PASSED  [ 87%]
+test_backend.py::test_health_check PASSED                    [  7%]
+test_backend.py::test_llm_status PASSED                      [ 15%]
+test_backend.py::test_llm_verify_openai_invalid PASSED       [ 23%]
+test_backend.py::test_llm_verify_gemini_invalid PASSED       [ 30%]
+test_backend.py::test_gemini_status PASSED                   [ 38%]
+test_backend.py::test_gemini_verify_invalid PASSED           [ 46%]
+test_backend.py::test_get_skills PASSED                      [ 53%]
+test_backend.py::test_search_skill PASSED                    [ 61%]
+test_backend.py::test_chat_step_1_idea_enrichment PASSED     [ 69%]
+test_backend.py::test_chat_step_1_turn_2_completion PASSED   [ 76%]
+test_backend.py::test_chat_step_2_design_reference PASSED    [ 84%]
+test_backend.py::test_chat_step_3_skill_confirmation PASSED  [ 92%]
 test_backend.py::test_generate_files PASSED                  [100%]
-========================= 8 passed in 0.19s =========================
+======================== 13 passed in 100% ========================
 ```
 
 ---

@@ -68,7 +68,7 @@ export default function App() {
           if (liveSkills && liveSkills.length > 0) {
             setSkills(liveSkills);
           }
-          const gStatus = await apiService.getGeminiStatus();
+          const gStatus = await apiService.getLLMStatus();
           setGeminiStatus(gStatus);
         }
       } catch (e) {
@@ -82,8 +82,8 @@ export default function App() {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   };
 
-  const handleVerifyGeminiKey = async (apiKey) => {
-    const result = await apiService.verifyGeminiKey(apiKey);
+  const handleVerifyLLMKey = async (payload) => {
+    const result = await apiService.verifyLLMKey(payload);
     setGeminiStatus(result);
     return result;
   };
@@ -213,7 +213,7 @@ export default function App() {
           onOpenGeminiModal={() => setIsGeminiModalOpen(true)}
         />
 
-        {/* Gemini Token Guard Warning Banner when inactive */}
+        {/* Multi-Provider LLM Token Guard Warning Banner when inactive */}
         {geminiStatus && !geminiStatus.valid && (
           <div style={{
             margin: '12px 20px 0',
@@ -231,7 +231,7 @@ export default function App() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '1rem' }}>⚠️</span>
               <div>
-                <strong>Token Gemini Belum Aktif / Kuota Habis:</strong> {geminiStatus.message}
+                <strong>Token LLM Belum Aktif / Kuota Habis:</strong> {geminiStatus.message}
               </div>
             </div>
             <button
@@ -249,7 +249,7 @@ export default function App() {
                 whiteSpace: 'nowrap'
               }}
             >
-              Hubungkan Token API
+              Pilih Provider LLM (Gemini / OpenAI)
             </button>
           </div>
         )}
@@ -276,12 +276,12 @@ export default function App() {
         </div>
       </main>
 
-      {/* Gemini API Key Modal */}
+      {/* Multi-Provider LLM Modal (Gemini / OpenAI) */}
       <GeminiKeyModal
         isOpen={isGeminiModalOpen}
         onClose={() => setIsGeminiModalOpen(false)}
         geminiStatus={geminiStatus}
-        onVerifyKey={handleVerifyGeminiKey}
+        onVerifyKey={handleVerifyLLMKey}
       />
     </div>
   );

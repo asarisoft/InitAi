@@ -4,11 +4,11 @@ const BACKEND_URL = import.meta.env.VITE_API_URL !== undefined ? import.meta.env
 
 export const apiService = {
   /**
-   * Check live Gemini connection and token quota
+   * Check unified live multi-provider LLM connection (Gemini or OpenAI)
    */
-  async getGeminiStatus() {
+  async getLLMStatus() {
     try {
-      const response = await fetch(`${BACKEND_URL}/gemini/status`, {
+      const response = await fetch(`${BACKEND_URL}/llm/status`, {
         signal: AbortSignal.timeout(2000)
       });
       if (response.ok) {
@@ -18,22 +18,24 @@ export const apiService = {
       // Backend or network error
     }
     return {
+      provider: "local",
       status: "missing_key",
       valid: false,
-      message: "Backend offline atau GEMINI_API_KEY belum dikonfigurasi."
+      model: "local-engine",
+      message: "Backend offline atau API Key belum dikonfigurasi."
     };
   },
 
   /**
-   * Actively test and connect a Gemini API Key live
+   * Actively test and connect an API Key live for a chosen provider (Gemini / OpenAI)
    */
-  async verifyGeminiKey(apiKey) {
+  async verifyLLMKey({ provider = "auto", apiKey, model = null }) {
     try {
-      const response = await fetch(`${BACKEND_URL}/gemini/verify`, {
+      const response = await fetch(`${BACKEND_URL}/llm/verify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ api_key: apiKey }),
-        signal: AbortSignal.timeout(4000)
+        body: JSON.stringify({ provider, api_key: apiKey, model }),
+        signal: AbortSignal.timeout(6000)
       });
       if (response.ok) {
         return await response.json();
@@ -42,10 +44,25 @@ export const apiService = {
       // Error
     }
     return {
+      provider,
       status: "error",
       valid: false,
       message: "Gagal memverifikasi API Key ke server."
     };
+  },
+
+  /**
+   * Check live Gemini connection and token quota (Legacy)
+   */
+  async getGeminiStatus() {
+    return this.getLLMStatus();
+  },
+
+  /**
+   * Actively test and connect a Gemini API Key live (Legacy)
+   */
+  async verifyGeminiKey(apiKey) {
+    return this.verifyLLMKey({ provider: "gemini", apiKey });
   },
 
   /**

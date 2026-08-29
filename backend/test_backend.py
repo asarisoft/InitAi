@@ -9,7 +9,34 @@ def test_health_check():
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "ok"
-    assert "Proactive Idea Enrichment" in data["features"]
+    assert "provider" in data
+    assert "llm_connected" in data
+    assert "Multi-Provider LLM (Gemini + OpenAI)" in data["features"]
+
+def test_llm_status():
+    response = client.get("/llm/status")
+    assert response.status_code == 200
+    data = response.json()
+    assert "provider" in data
+    assert "status" in data
+    assert "valid" in data
+    assert "message" in data
+
+def test_llm_verify_openai_invalid():
+    response = client.post("/llm/verify", json={"provider": "openai", "api_key": "sk-fake_test_key_12345", "model": "gpt-4o-mini"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["provider"] == "openai"
+    assert data["valid"] is False
+    assert data["status"] in ["invalid_key", "error"]
+
+def test_llm_verify_gemini_invalid():
+    response = client.post("/llm/verify", json={"provider": "gemini", "api_key": "AIzaSy_fake_test_key_12345"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["provider"] == "gemini"
+    assert data["valid"] is False
+    assert data["status"] in ["invalid_key", "error"]
 
 def test_gemini_status():
     response = client.get("/gemini/status")

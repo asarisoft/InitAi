@@ -63,10 +63,23 @@ class HealthResponse(BaseModel):
     status: str
     app: str
     version: str
+    provider: str = "auto"
     llm_connected: bool
     llm_status: str
-    llm_model: Optional[str] = "gemini-2.0-flash"
+    llm_model: Optional[str] = None
     features: List[str]
+
+class LLMVerifyRequest(BaseModel):
+    provider: str = Field("auto", description="Provider: 'gemini', 'openai', or 'auto'")
+    api_key: Optional[str] = Field(None, max_length=250, description="API Key opsional untuk dites")
+    model: Optional[str] = Field(None, max_length=100, description="Model opsional untuk dites")
+
+class LLMStatusResponse(BaseModel):
+    provider: str
+    status: str
+    valid: bool
+    model: Optional[str] = None
+    message: str
 
 class GeminiVerifyRequest(BaseModel):
     api_key: Optional[str] = Field(None, max_length=200, description="API Key Gemini opsional untuk dites")

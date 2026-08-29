@@ -20,31 +20,35 @@ export default function Header({
     }
   };
 
-  const getGeminiBadge = () => {
+  const getLLMBadge = () => {
+    const provider = geminiStatus?.provider || 'local';
+    const model = geminiStatus?.model;
+
     if (geminiStatus?.valid) {
+      const providerLabel = provider === 'openai' ? 'OpenAI' : 'Gemini';
       return {
-        label: "Gemini AI Active",
+        label: `${providerLabel}: ${model || 'Active'}`,
         color: "var(--accent-emerald)",
         bg: "rgba(16, 185, 129, 0.12)",
         border: "rgba(16, 185, 129, 0.3)"
       };
     } else if (geminiStatus?.status === 'quota_exceeded' || geminiStatus?.status === 'invalid_key') {
       return {
-        label: "Gemini Token Error",
+        label: `${provider.toUpperCase()} Token Error`,
         color: "var(--accent-ruby)",
         bg: "rgba(239, 68, 68, 0.12)",
         border: "rgba(239, 68, 68, 0.3)"
       };
     }
     return {
-      label: "Gemini Key Not Set",
+      label: "LLM Key Not Set",
       color: "var(--accent-amber)",
       bg: "rgba(245, 158, 11, 0.12)",
       border: "rgba(245, 158, 11, 0.3)"
     };
   };
 
-  const badge = getGeminiBadge();
+  const badge = getLLMBadge();
 
   return (
     <header className="top-header">
@@ -54,7 +58,7 @@ export default function Header({
           <span>{isBackendOnline ? 'Backend Online' : 'Local Engine Ready'}</span>
         </div>
 
-        {/* Clickable Gemini Token Verification Pill */}
+        {/* Clickable Multi-Provider LLM Token Verification Pill */}
         <button
           type="button"
           onClick={onOpenGeminiModal}
@@ -62,7 +66,7 @@ export default function Header({
             display: 'inline-flex',
             alignItems: 'center',
             gap: '6px',
-            padding: '3px 9px',
+            padding: '4px 10px',
             borderRadius: '100px',
             fontSize: '0.72rem',
             fontWeight: 700,
@@ -72,7 +76,7 @@ export default function Header({
             border: `1px solid ${badge.border}`,
             transition: 'all 0.15s ease'
           }}
-          title="Klik untuk melihat / memasukkan Gemini API Key"
+          title="Klik untuk memilih & mengonfigurasi LLM (Gemini / OpenAI)"
         >
           <IconSparkles size={12} />
           <span>{badge.label}</span>
