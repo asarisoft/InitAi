@@ -1,12 +1,13 @@
 from fastapi import APIRouter
 from app.schemas.models import ChatRequest, ChatResponse
 from app.services.enrichment import enrich_user_idea
+from app.services.gemini_service import gemini_service
 from app.services.skills_service import DEFAULT_TREND_SKILLS
 
 router = APIRouter(prefix="/chat", tags=["Conversational Wizard"])
 
 @router.post("", response_model=ChatResponse)
-def handle_chat_message(req: ChatRequest):
+async def handle_chat_message(req: ChatRequest):
     step = req.step
     user_input = req.message.strip()
     turn = req.interview_turn
@@ -14,7 +15,15 @@ def handle_chat_message(req: ChatRequest):
     # ----------------- Step 1: PRD Interview & Proactive Idea Enrichment -----------------
     if step == 1:
         if turn == 1:
-            suggested_opts = enrich_user_idea(user_input)
+            # 1. Try Gemini Tool Calling if GEMINI_API_KEY is configured
+            suggested_opts = None
+            if gemini_service.is_available():
+                suggested_opts = await gemini_service.call_enrichment_tool(user_input)
+
+            # 2. Fallback to built-in Intelligent Local Enrichment Engine
+            if not suggested_opts:
+                suggested_opts = enrich_user_idea(user_input)
+
             reply = (
                 f"💡 **Ide Dasar Diterima:** *\"{user_input}\"*\n\n"
                 "Saya telah menganalisis konsep ini dan menyusun **3 alternatif arah produk & arsitektur** yang dapat memperkaya ide Anda (klik salah satu opsi di bawah atau ketik kustomisasi Anda):\n\n"
