@@ -63,6 +63,9 @@ class HealthResponse(BaseModel):
     status: str
     app: str
     version: str
+    llm_connected: bool
+    llm_status: str
+    llm_model: Optional[str] = "gemini-2.0-flash"
     features: List[str]
 
 class GeminiVerifyRequest(BaseModel):

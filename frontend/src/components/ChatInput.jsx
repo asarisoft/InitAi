@@ -82,18 +82,18 @@ export default function ChatInput({ onSendMessage, disabled, currentStep }) {
           <textarea
             ref={textareaRef}
             className="composer-textarea"
-            rows={1}
+            rows={2}
             value={inputText}
             onChange={handleInput}
             onKeyDown={handleKeyDown}
             placeholder={
               currentStep === 1
-                ? "Describe your product vision, target persona, or problem statement..."
+                ? "Jelaskan visi produk, target persona, atau problem statement yang ingin diselesaikan..."
                 : currentStep === 2
-                ? "Provide reference URLs (e.g. figma.com, linear.app) or UI design guidelines..."
+                ? "Masukkan URL referensi desain (misal: figma.com, linear.app) atau gaya UI yang diinginkan..."
                 : currentStep === 3
-                ? "Provide additional skills or instructions..."
-                : "Project initialization completed. Review and download artifacts above."
+                ? "Ketik skill kustom tambahan atau instruksi arsitektur khusus..."
+                : "Inisiasi proyek telah selesai. Silakan unduh 4 berkas artefak markdown di atas."
             }
             disabled={disabled || currentStep >= 4}
             aria-label="Message prompt composer"
@@ -103,11 +103,16 @@ export default function ChatInput({ onSendMessage, disabled, currentStep }) {
             className="btn-send"
             onClick={handleSend}
             disabled={disabled || !inputText.trim() || currentStep >= 4}
-            title="Send Message (Enter)"
+            title="Kirim Pesan (Enter)"
             aria-label="Send message"
           >
-            <IconSend size={14} />
+            <IconSend size={15} />
           </button>
+        </div>
+
+        <div className="input-meta-bar">
+          <span>Tekan <strong>Enter</strong> untuk kirim, <strong>Shift + Enter</strong> untuk baris baru</span>
+          <span style={{ fontFamily: 'var(--font-mono)' }}>{inputText.length} / 5000</span>
         </div>
       </div>
     </footer>
