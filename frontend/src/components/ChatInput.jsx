@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
+import { IconSend, IconSparkles } from './Icons';
 
 export default function ChatInput({ onSendMessage, disabled, currentStep }) {
   const [inputText, setInputText] = useState('');
@@ -8,21 +9,21 @@ export default function ChatInput({ onSendMessage, disabled, currentStep }) {
     switch (currentStep) {
       case 1:
         return [
-          "Aplikasi SaaS AI Web Agent untuk otomatisasi PRD dan arsitektur sistem",
-          "Platform E-Commerce Modern dengan AI Personal Shopper",
-          "Aplikasi Manajemen Tugas Tim dengan Real-time Collaboration"
+          "B2B SaaS Web Studio for 3D packaging mockups and CAD dielines",
+          "Autonomous Code Review & Security Analysis Agent for GitHub",
+          "Real-time Collaborative Whiteboard & Design System Studio"
         ];
       case 2:
         return [
-          "Modern Dark SaaS Web Studio (seperti Pacdora & Figma, 60fps micro-animations)",
-          "Clean Minimalist Light Dashboard (seperti Linear & Notion)",
-          "Cyberpunk Neon Theme dengan High Contrast & Glassmorphism"
+          "Pacdora & Figma dark-mode aesthetic with zinc slate palette and 60fps micro-interactions",
+          "Linear-inspired minimal interface with subtle 1px border lines and monospace accents",
+          "High-contrast obsidian theme with electric indigo and emerald status tokens"
         ];
       case 3:
         return [
-          "Konfirmasi skill ini sudah sesuai, lanjut ke unduh file!",
-          "Tambahkan skill integrasi Vector DB & LangChain",
-          "Hapus skill DevOps untuk sementara"
+          "Curated toolchain looks solid, proceed to file generation",
+          "Add PgVector & LangGraph for multi-agent workflows",
+          "Exclude DevOps containerization for now"
         ];
       default:
         return [];
@@ -54,15 +55,15 @@ export default function ChatInput({ onSendMessage, disabled, currentStep }) {
   const suggestions = getSuggestions();
 
   return (
-    <div className="chat-input-container">
-      <div className="chat-input-wrapper">
+    <footer className="chat-input-bar">
+      <div className="chat-input-inner">
         {suggestions.length > 0 && (
-          <div className="prompt-suggestions-row">
+          <div className="suggestions-pills">
             {suggestions.map((sug, i) => (
               <button
                 key={i}
                 type="button"
-                className="suggestion-pill"
+                className="prompt-pill"
                 onClick={() => {
                   setInputText(sug);
                   if (textareaRef.current) {
@@ -70,44 +71,45 @@ export default function ChatInput({ onSendMessage, disabled, currentStep }) {
                   }
                 }}
               >
-                💡 {sug}
+                <IconSparkles size={12} style={{ color: 'var(--brand-primary)' }} />
+                <span>{sug}</span>
               </button>
             ))}
           </div>
         )}
 
-        <div className="input-box-row">
+        <div className="input-composer">
           <textarea
             ref={textareaRef}
-            className="chat-textarea"
+            className="composer-textarea"
             rows={1}
             value={inputText}
             onChange={handleInput}
             onKeyDown={handleKeyDown}
             placeholder={
               currentStep === 1
-                ? "Ketikkan ide proyek Anda di sini..."
+                ? "Describe your product vision, target persona, or problem statement..."
                 : currentStep === 2
-                ? "Ketik URL referensi atau panduan gaya desain UI..."
+                ? "Provide reference URLs (e.g. pacdora.com, figma.com) or UI design guidelines..."
                 : currentStep === 3
-                ? "Ketik pesan / skill tambahan jika ada..."
-                : "Percakapan selesai. Download file di atas."
+                ? "Provide additional skills or instructions..."
+                : "Project initialization completed. Review and download artifacts above."
             }
             disabled={disabled || currentStep >= 4}
-            aria-label="Ketik pesan untuk AI Agent"
+            aria-label="Message prompt composer"
           />
           <button
             type="button"
-            className="btn-send-message"
+            className="btn-send"
             onClick={handleSend}
             disabled={disabled || !inputText.trim() || currentStep >= 4}
-            title="Kirim Pesan"
-            aria-label="Kirim pesan"
+            title="Send Message (Enter)"
+            aria-label="Send message"
           >
-            ➤
+            <IconSend size={14} />
           </button>
         </div>
       </div>
-    </div>
+    </footer>
   );
 }

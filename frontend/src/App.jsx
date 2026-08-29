@@ -21,8 +21,8 @@ export default function App() {
     coreIdea: '',
     prdDetails: '',
     designGuidelines: '',
-    targetUsers: 'Full-Stack Developers, Product Managers, and AI Engineers',
-    techStack: 'ReactJS, FastAPI, Docker, TailwindCSS'
+    targetUsers: 'Full-Stack Engineers, Product Architects, and AI Designers',
+    techStack: 'React 18, FastAPI, Docker, TailwindCSS'
   });
 
   const [skills, setSkills] = useState(() => {
@@ -32,22 +32,22 @@ export default function App() {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: "👋 **Selamat Datang di InitAI Web Studio!**\n\n" +
-        "Saya adalah **AI Architecture & PRD Assistant**. Saya akan memandu Anda melalui 3 tahap interaktif untuk menghasilkan 3 file artefak siap pakai (`prd.md`, `list_skills.md`, dan `systemdesign.md`).\n\n" +
+      content: "Welcome to **InitAI Web Studio**.\n\n" +
+        "I will guide you through a 3-step structured architectural interview to produce production-grade specifications and deliver 3 markdown deliverables (`prd.md`, `list_skills.md`, and `systemdesign.md`).\n\n" +
         "---\n\n" +
-        "### 🚀 **Tahap 1: Deskripsi & PRD Proyek**\n" +
-        "**Apa ide utama dari proyek yang ingin Anda bangun?**\n" +
-        "*(Ceritakan problem statement, solusi, atau konsep aplikasi yang Anda bayangkan)*"
+        "### 🚀 Step 1: Product Concept & Problem Statement\n" +
+        "**What is the core vision or problem statement of your project?**\n" +
+        "*(Feel free to describe the target audience, user pain points, or high-level functionality)*"
     }
   ]);
 
-  // Handle theme toggle
+  // Handle theme persistence
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('initai_theme', theme);
   }, [theme]);
 
-  // Ping backend to check status
+  // Ping backend status
   useEffect(() => {
     const checkBackend = async () => {
       try {
@@ -78,7 +78,6 @@ export default function App() {
         selectedSkills: skills
       });
 
-      // Update extracted project data
       if (response.extractedData) {
         setProjectData(prev => ({
           ...prev,
@@ -86,7 +85,6 @@ export default function App() {
         }));
       }
 
-      // Add AI reply to messages
       setMessages(prev => [
         ...prev,
         { role: 'assistant', content: response.reply }
@@ -99,7 +97,7 @@ export default function App() {
         ...prev,
         {
           role: 'assistant',
-          content: "⚠️ Terjadi kesalahan dalam memproses pesan. Menggunakan respons cadangan lokal..."
+          content: "Encountered a processing error. Resuming with client-side fallback state."
         }
       ]);
     } finally {
@@ -128,11 +126,11 @@ export default function App() {
 
   const handleConfirmSkills = async () => {
     const activeSkillsCount = skills.filter(s => s.selected !== false).length;
-    await handleSendMessage(`Saya menyetujui ${activeSkillsCount} skill pilihan untuk proyek ini.`);
+    await handleSendMessage(`Confirmed ${activeSkillsCount} active capabilities for this project.`);
   };
 
   const handleReset = () => {
-    if (window.confirm("Apakah Anda yakin ingin mengulang wizard dari awal?")) {
+    if (window.confirm("Reset active wizard session back to step 1?")) {
       setCurrentStep(1);
       setInterviewTurn(1);
       setProjectData({
@@ -140,15 +138,15 @@ export default function App() {
         coreIdea: '',
         prdDetails: '',
         designGuidelines: '',
-        targetUsers: 'Full-Stack Developers, Product Managers, and AI Engineers',
-        techStack: 'ReactJS, FastAPI, Docker, TailwindCSS'
+        targetUsers: 'Full-Stack Engineers, Product Architects, and AI Designers',
+        techStack: 'React 18, FastAPI, Docker, TailwindCSS'
       });
       setSkills(JSON.parse(JSON.stringify(INITIAL_SKILLS)));
       setMessages([
         {
           role: 'assistant',
-          content: "👋 **Sesi Direset!**\n\n" +
-            "Mari mulai dari awal. **Apa ide utama dari proyek yang ingin Anda bangun?**"
+          content: "Session reset.\n\n" +
+            "**What is the core vision or problem statement of your project?**"
         }
       ]);
     }

@@ -1,27 +1,30 @@
 import React from 'react';
+import { IconSparkles, IconCheck, IconRefresh } from './Icons';
 
 export default function Sidebar({ currentStep, onReset, projectData }) {
   const steps = [
-    { number: 1, title: "PRD Interview", desc: "Tanya-jawab ide & MVP requirements" },
-    { number: 2, title: "Design References", desc: "Panduan gaya visual & UI Tokens" },
-    { number: 3, title: "Skill Matrix", desc: "Kurasi perkakas & rekomendasi tren" },
-    { number: 4, title: "Download Files", desc: "Ekspor 3 artefak markdown" }
+    { number: 1, title: "PRD Interview", desc: "Core problem & MVP scope" },
+    { number: 2, title: "Design Language", desc: "Visual tokens & UI system" },
+    { number: 3, title: "Agent Skills", desc: "Curated tools & trend matrix" },
+    { number: 4, title: "Export Files", desc: "Download prd, skills & design" }
   ];
 
   return (
     <aside className="sidebar" aria-label="Project Wizard Navigation">
       <div className="sidebar-header">
-        <div className="logo-badge">⚡</div>
-        <div>
-          <h1 className="logo-title">InitAI Studio</h1>
-          <div className="logo-subtitle">AI Agent Initializer</div>
+        <div className="logo-symbol">
+          <IconSparkles size={16} />
+        </div>
+        <div className="logo-meta">
+          <h1>InitAI Studio</h1>
+          <p>AI System Architect</p>
         </div>
       </div>
 
       <div className="sidebar-body">
         <div>
-          <div className="steps-tracker-title">Tahapan Wizard</div>
-          <nav>
+          <div className="section-label">Workflow Progress</div>
+          <nav className="stepper-nav">
             {steps.map((step) => {
               const isActive = currentStep === step.number;
               const isCompleted = currentStep > step.number;
@@ -29,14 +32,16 @@ export default function Sidebar({ currentStep, onReset, projectData }) {
               return (
                 <div
                   key={step.number}
-                  className={`step-nav-item ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
+                  className={`step-node ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
                 >
-                  <div className="step-number-badge">
-                    {isCompleted ? '✓' : step.number}
+                  <div className="step-indicator-wrapper">
+                    <div className="step-indicator">
+                      {isCompleted ? <IconCheck size={12} /> : step.number}
+                    </div>
                   </div>
-                  <div>
-                    <div className="step-info-title">{step.title}</div>
-                    <div className="step-info-desc">{step.desc}</div>
+                  <div className="step-content">
+                    <div className="step-title">{step.title}</div>
+                    <div className="step-desc">{step.desc}</div>
                   </div>
                 </div>
               );
@@ -45,25 +50,21 @@ export default function Sidebar({ currentStep, onReset, projectData }) {
         </div>
 
         {projectData && (projectData.coreIdea || projectData.designGuidelines) && (
-          <div style={{
-            background: 'var(--bg-surface)',
-            border: '1px solid var(--border-subtle)',
-            borderRadius: 'var(--radius-md)',
-            padding: '12px',
-            fontSize: '0.78rem'
-          }}>
-            <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '6px' }}>
-              📌 Rangkuman Sesi:
+          <div className="session-summary-box">
+            <div className="section-label" style={{ marginBottom: '8px' }}>
+              Project Context
             </div>
             {projectData.coreIdea && (
-              <p style={{ color: 'var(--text-secondary)', marginBottom: '4px' }}>
-                <strong>Ide:</strong> {projectData.coreIdea.slice(0, 45)}...
-              </p>
+              <div className="summary-item">
+                <strong>Problem / Concept</strong>
+                <div>{projectData.coreIdea.length > 70 ? `${projectData.coreIdea.slice(0, 70)}...` : projectData.coreIdea}</div>
+              </div>
             )}
             {projectData.designGuidelines && (
-              <p style={{ color: 'var(--text-secondary)' }}>
-                <strong>Desain:</strong> {projectData.designGuidelines.slice(0, 45)}...
-              </p>
+              <div className="summary-item">
+                <strong>Design Paradigm</strong>
+                <div>{projectData.designGuidelines.length > 70 ? `${projectData.designGuidelines.slice(0, 70)}...` : projectData.designGuidelines}</div>
+              </div>
             )}
           </div>
         )}
@@ -72,13 +73,14 @@ export default function Sidebar({ currentStep, onReset, projectData }) {
       <div className="sidebar-footer">
         <button
           onClick={onReset}
-          className="btn-reset"
-          title="Reset Sesi Percakapan"
-          aria-label="Reset wizard session"
+          className="btn-ghost"
+          title="Reset Wizard Session"
+          aria-label="Reset session"
         >
-          🔄 Reset Wizard
+          <IconRefresh size={13} />
+          <span>Reset Session</span>
         </button>
-        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
+        <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
           v1.0.0
         </span>
       </div>

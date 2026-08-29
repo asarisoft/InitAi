@@ -1,38 +1,41 @@
 import React from 'react';
 import ThemeToggle from './ThemeToggle';
+import { IconGithub, IconExternalLink } from './Icons';
 
 export default function Header({ currentStep, theme, onToggleTheme, isBackendOnline }) {
   const getStepTitle = (step) => {
     switch (step) {
-      case 1: return "Tahap 1: PRD Interview";
-      case 2: return "Tahap 2: Referensi Desain UI";
-      case 3: return "Tahap 3: Kurasi Skill & Tren AI";
-      case 4: return "Tahap 4: Unduh Artefak Markdown";
+      case 1: return "PRD Architecture & Scope Interview";
+      case 2: return "Visual Design & UI Specification";
+      case 3: return "AI Agent Skillset Matrix";
+      case 4: return "Packaging & Export Artifacts";
       default: return "AI Agent Workspace";
     }
   };
 
   return (
     <header className="top-header">
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-        <div className="header-status-badge">
-          <span className="header-status-dot"></span>
-          <span>{isBackendOnline ? 'FastAPI Backend Online' : 'Mock AI Engine Standalone'}</span>
+      <div className="header-left">
+        <div className="status-pill">
+          <span className="status-dot"></span>
+          <span>{isBackendOnline ? 'API Connected' : 'Studio Engine Ready'}</span>
         </div>
-        <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-          • {getStepTitle(currentStep)}
+        <span className="breadcrumb-label">
+          Step {currentStep}: {getStepTitle(currentStep)}
         </span>
       </div>
 
-      <div className="header-actions">
+      <div className="header-right">
         <a
           href="https://github.com/asarisoft/InitAi"
           target="_blank"
           rel="noreferrer"
-          className="btn-reset"
+          className="btn-ghost"
           style={{ textDecoration: 'none' }}
         >
-          🐙 GitHub Repo
+          <IconGithub size={15} />
+          <span>GitHub</span>
+          <IconExternalLink size={12} style={{ opacity: 0.6 }} />
         </a>
         <ThemeToggle theme={theme} onToggle={onToggleTheme} />
       </div>

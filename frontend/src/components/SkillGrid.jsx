@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CATEGORIES } from '../utils/defaultSkills';
+import { IconGithub, IconExternalLink, IconSearch, IconPlus, IconCheck } from './Icons';
 
 export default function SkillGrid({ skills, onToggleSkill, onAddCustomSkill, onConfirmSkills }) {
   const [activeCategory, setActiveCategory] = useState('All');
@@ -28,23 +29,19 @@ export default function SkillGrid({ skills, onToggleSkill, onAddCustomSkill, onC
 
   return (
     <div className="interactive-panel">
-      <div className="skill-grid-container">
-        <div className="skill-header-row">
-          <div>
-            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-              ⚡ Matriks Rekomendasi Skill Agen AI
-            </h3>
-            <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
-              Pilih dan kurasi kapabilitas yang dibutuhkan ({selectedCount} skill aktif)
-            </p>
+      <div className="skill-matrix-card">
+        <div className="matrix-header">
+          <div className="matrix-header-text">
+            <h3>Agent Skill Matrix & Capabilities</h3>
+            <p>Curate engineering toolchain ({selectedCount} of {skills.length} skills active)</p>
           </div>
 
-          <div className="skill-category-tabs" role="tablist">
+          <div className="category-tabs-group" role="tablist">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
                 type="button"
-                className={`category-tab-btn ${activeCategory === cat ? 'active' : ''}`}
+                className={`cat-tab-btn ${activeCategory === cat ? 'active' : ''}`}
                 onClick={() => setActiveCategory(cat)}
                 role="tab"
                 aria-selected={activeCategory === cat}
@@ -55,7 +52,7 @@ export default function SkillGrid({ skills, onToggleSkill, onAddCustomSkill, onC
           </div>
         </div>
 
-        <div className="skill-cards-grid">
+        <div className="matrix-grid">
           {filteredSkills.map((skill) => {
             const isSelected = skill.selected !== false;
             const badgeClass = skill.category.replace(/[\/\s]/g, '-');
@@ -63,13 +60,13 @@ export default function SkillGrid({ skills, onToggleSkill, onAddCustomSkill, onC
             return (
               <div
                 key={skill.id}
-                className={`skill-card ${isSelected ? 'selected' : ''}`}
+                className={`skill-item-card ${isSelected ? 'selected' : ''}`}
                 onClick={() => onToggleSkill(skill.id)}
               >
                 <div>
                   <div className="skill-card-top">
-                    <span className="skill-name">{skill.name}</span>
-                    <span className={`skill-badge ${badgeClass}`}>
+                    <span className="skill-title">{skill.name}</span>
+                    <span className={`category-tag ${badgeClass}`}>
                       {skill.category}
                     </span>
                   </div>
@@ -79,7 +76,7 @@ export default function SkillGrid({ skills, onToggleSkill, onAddCustomSkill, onC
                   </p>
 
                   {skill.advantages && skill.advantages.length > 0 && (
-                    <ul className="skill-advantages">
+                    <ul className="feature-bullets">
                       {skill.advantages.slice(0, 3).map((adv, i) => (
                         <li key={i}>{adv}</li>
                       ))}
@@ -87,29 +84,32 @@ export default function SkillGrid({ skills, onToggleSkill, onAddCustomSkill, onC
                   )}
                 </div>
 
-                <div className="skill-card-bottom">
+                <div className="skill-card-footer">
                   <a
                     href={skill.githubUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="github-link"
+                    className="link-github"
                     onClick={(e) => e.stopPropagation()}
-                    title="Buka repositori GitHub terkait"
+                    title="View GitHub Repository"
                   >
-                    🔗 GitHub Repo
+                    <IconGithub size={13} />
+                    <span>Repository</span>
+                    <IconExternalLink size={10} style={{ opacity: 0.6 }} />
                   </a>
 
                   <label
-                    className="skill-checkbox-label"
+                    className="switch-control"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <input
                       type="checkbox"
                       checked={isSelected}
                       onChange={() => onToggleSkill(skill.id)}
+                      style={{ cursor: 'pointer', accentColor: 'var(--brand-primary)' }}
                     />
-                    <span style={{ color: isSelected ? 'var(--accent-emerald)' : 'var(--text-muted)' }}>
-                      {isSelected ? 'Aktif' : 'Nonaktif'}
+                    <span style={{ color: isSelected ? 'var(--text-primary)' : 'var(--text-muted)' }}>
+                      {isSelected ? 'Enabled' : 'Disabled'}
                     </span>
                   </label>
                 </div>
@@ -118,32 +118,43 @@ export default function SkillGrid({ skills, onToggleSkill, onAddCustomSkill, onC
           })}
         </div>
 
-        {/* Custom Skill Addition with AI Simulation */}
-        <form className="custom-skill-form" onSubmit={handleAddSkill}>
+        {/* Custom Skill Input */}
+        <form className="custom-skill-bar" onSubmit={handleAddSkill}>
           <input
             type="text"
-            className="custom-skill-input"
+            className="input-text-clean"
             value={customInput}
             onChange={(e) => setCustomInput(e.target.value)}
-            placeholder="Tambah skill custom (contoh: LangGraph Workflow, Vector Search, GraphQL)..."
+            placeholder="Add custom capability (e.g. pgvector, LangGraph, OpenAPI generator)..."
             disabled={isSearchingCustom}
-            aria-label="Nama skill custom"
+            aria-label="Add custom skill"
           />
           <button
             type="submit"
-            className="btn-add-skill"
+            className="btn-primary"
             disabled={isSearchingCustom || !customInput.trim()}
           >
-            {isSearchingCustom ? '🔍 Mencari Tren...' : '➕ Tambah Skill'}
+            {isSearchingCustom ? (
+              <>
+                <IconSearch size={14} className="animate-spin" />
+                <span>Searching Trends...</span>
+              </>
+            ) : (
+              <>
+                <IconPlus size={14} />
+                <span>Add Skill</span>
+              </>
+            )}
           </button>
         </form>
 
         <button
           type="button"
-          className="btn-confirm-skills"
+          className="btn-confirm-bar"
           onClick={onConfirmSkills}
         >
-          ✓ Setujui {selectedCount} Skill & Generate File Markdown
+          <IconCheck size={16} />
+          <span>Approve {selectedCount} Skills & Generate Artifacts</span>
         </button>
       </div>
     </div>

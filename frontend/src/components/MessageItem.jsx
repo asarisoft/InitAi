@@ -1,9 +1,9 @@
 import React from 'react';
+import { IconBot, IconUser } from './Icons';
 
 export default function MessageItem({ message }) {
   const isAi = message.role === 'assistant';
 
-  // Helper to format simple markdown elements (headings, bold, lists, code) safely
   const renderFormattedContent = (content) => {
     const lines = content.split('\n');
     const elements = [];
@@ -36,18 +36,17 @@ export default function MessageItem({ message }) {
         return;
       }
 
-      // Numbered lists
+      // Numbered list
       if (/^\d+\.\s+/.test(line)) {
-        const numText = line.replace(/^\d+\.\s+/, '');
         elements.push(
-          <p key={idx} style={{ margin: '4px 0 4px 12px' }} dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(line) }} />
+          <p key={idx} style={{ margin: '4px 0 4px 6px' }} dangerouslySetInnerHTML={{ __html: formatInlineMarkdown(line) }} />
         );
         return;
       }
 
       // Empty line
       if (line.trim() === '') {
-        elements.push(<div key={idx} style={{ height: '6px' }} />);
+        elements.push(<div key={idx} style={{ height: '8px' }} />);
         return;
       }
 
@@ -62,21 +61,21 @@ export default function MessageItem({ message }) {
 
   const formatInlineMarkdown = (text) => {
     return text
-      // Bold
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      // Italic
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      // Inline Code
       .replace(/`([^`]+)`/g, '<code>$1</code>');
   };
 
   return (
     <div className={`message-row ${isAi ? 'ai' : 'user'}`}>
-      <div className={`avatar ${isAi ? 'ai' : 'user'}`}>
-        {isAi ? '⚡' : '👤'}
+      <div className={`msg-avatar ${isAi ? 'ai' : 'user'}`}>
+        {isAi ? <IconBot size={16} /> : <IconUser size={16} />}
       </div>
-      <div className="bubble">
-        {renderFormattedContent(message.content)}
+      <div className="msg-body">
+        <div className="msg-author">{isAi ? 'InitAI Architect' : 'You'}</div>
+        <div className="bubble">
+          {renderFormattedContent(message.content)}
+        </div>
       </div>
     </div>
   );

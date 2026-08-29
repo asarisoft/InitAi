@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import MessageItem from './MessageItem';
 import SkillGrid from './SkillGrid';
 import DownloadSection from './DownloadSection';
+import { IconBot } from './Icons';
 
 export default function ChatBox({
   messages,
@@ -27,11 +28,16 @@ export default function ChatBox({
 
       {isTyping && (
         <div className="message-row ai">
-          <div className="avatar ai">⚡</div>
-          <div className="bubble typing-indicator">
-            <span className="typing-dot"></span>
-            <span className="typing-dot"></span>
-            <span className="typing-dot"></span>
+          <div className="msg-avatar ai">
+            <IconBot size={16} />
+          </div>
+          <div className="msg-body">
+            <div className="msg-author">InitAI Architect</div>
+            <div className="typing-pill">
+              <span className="typing-dot"></span>
+              <span className="typing-dot"></span>
+              <span className="typing-dot"></span>
+            </div>
           </div>
         </div>
       )}

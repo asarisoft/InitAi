@@ -1,15 +1,19 @@
 import React from 'react';
+import { IconSun, IconMoon } from './Icons';
 
 export default function ThemeToggle({ theme, onToggle }) {
+  const isDark = theme === 'dark';
+
   return (
     <button
       onClick={onToggle}
-      className="btn-reset"
-      style={{ padding: '6px 10px', fontSize: '0.85rem' }}
-      title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-      aria-label="Toggle visual theme"
+      className="btn-ghost"
+      title={`Switch to ${isDark ? 'Light' : 'Dark'} Mode`}
+      aria-label="Toggle theme"
+      style={{ padding: '6px 8px' }}
     >
-      {theme === 'dark' ? '☀️ Light' : '🌙 Dark'}
+      {isDark ? <IconSun size={15} /> : <IconMoon size={15} />}
+      <span style={{ fontSize: '0.74rem' }}>{isDark ? 'Light' : 'Dark'}</span>
     </button>
   );
 }
