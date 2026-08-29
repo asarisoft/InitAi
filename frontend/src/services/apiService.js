@@ -116,7 +116,7 @@ export const apiService = {
             selected: s.selected !== false
           })) : []
         }),
-        signal: AbortSignal.timeout(2000)
+        signal: AbortSignal.timeout(45000)
       });
 
       if (response.ok) {
@@ -141,7 +141,7 @@ export const apiService = {
         };
       }
     } catch (e) {
-      // Fallback
+      console.warn("Backend chat error or network disconnect, falling back to local engine:", e);
     }
 
     return await mockLlmService.processMessage({ message, step, interviewTurn, projectData });
@@ -156,7 +156,7 @@ export const apiService = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: skillName, category }),
-        signal: AbortSignal.timeout(2000)
+        signal: AbortSignal.timeout(15000)
       });
 
       if (response.ok) {

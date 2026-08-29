@@ -14,38 +14,75 @@ export class MockLlmService {
     // Step 1: PRD Interview Loop & Idea Enrichment
     if (step === 1) {
       if (interviewTurn === 1) {
-        let suggestedOptions = [
-          {
-            id: "opt-1",
-            title: "B2B SaaS Pro Studio (Recommended MVP)",
-            description: "Targetkan Tim Engineering & Designer dengan fitur Role-Based Access, Real-time Collab, dan Export Multi-Format.",
-            promptPayload: "Target Pengguna: Tim B2B Engineering & Design. Fitur Kunci: Real-time Multi-cursor Collab, Web Worker, dan Export High-Resolution.",
-            badge: "B2B Pro"
-          },
-          {
-            id: "opt-2",
-            title: "Developer-First Platform with API & SDK",
-            description: "Targetkan Full-Stack Developers dengan Headless Architecture, Webhooks, dan Embeddable SDK.",
-            promptPayload: "Target Pengguna: Full-Stack Developers. Fitur Kunci: Headless REST/WebSocket API, CLI tooling, dan Webhook Integrations.",
-            badge: "Dev Platform"
-          },
-          {
-            id: "opt-3",
-            title: "AI-Autonomous Workflow Studio",
-            description: "Targetkan Otomasi Mandiri dengan Background Task Queues, Redis Caching, dan Markdown Artifact Exporter.",
-            promptPayload: "Target Pengguna: Produktivitas Tim. Fitur Kunci: Asynchronous Task Runner, Redis Cache, dan Automated Markdown Deliverables.",
-            badge: "AI Automation"
-          }
-        ];
+        let suggestedOptions = [];
+
+        if (clean.includes("ecom") || clean.includes("toko") || clean.includes("shop") || clean.includes("wedding") || clean.includes("pasar")) {
+          suggestedOptions = [
+            {
+              id: "opt-1",
+              title: "B2C Interactive Hub & Instant Checkout",
+              description: "Pengalaman pengguna interaktif dengan katalog dinamis, integrasi QRIS, dan WhatsApp notifications.",
+              promptPayload: `Target Pengguna: Konsumen B2C untuk ${trimmed}. Fitur Kunci: Dynamic Booking/Catalog, Real-time QRIS Payment, dan Automated Order Notifications.`,
+              badge: "B2C Flow"
+            },
+            {
+              id: "opt-2",
+              title: "Multi-Vendor Marketplace & Partner Portal",
+              description: "Portal mandiri untuk mitra/vendor, manajemen komisi otomatis, dan analitik performa.",
+              promptPayload: `Target Pengguna: Vendor Mitra & Admin. Fitur Kunci: Vendor Self-service Dashboard, Commission Split Engine, dan Role-Based Access Control.`,
+              badge: "Multi-Vendor"
+            },
+            {
+              id: "opt-3",
+              title: "AI-Powered Conversational Assistant",
+              description: "Asisten cerdas untuk memandu rekomendasi produk, kustomisasi pesanan, dan customer care 24/7.",
+              promptPayload: `Target Pengguna: Pengguna Digital. Fitur Kunci: AI Recommendation Agent, Natural Language Search, dan WhatsApp CRM Webhooks.`,
+              badge: "AI Commerce"
+            }
+          ];
+        } else {
+          suggestedOptions = [
+            {
+              id: "opt-1",
+              title: "Lean SaaS Studio MVP (Recommended)",
+              description: "Fokus pada alur pengguna inti, otentikasi aman JWT/OAuth, dan dashboard analitik cepat.",
+              promptPayload: `Target Pengguna: Tim Profesional & Developer untuk ${trimmed}. Fitur Kunci: Core Workflow Automation, Analytics Dashboard, dan Webhooks.`,
+              badge: "Lean MVP"
+            },
+            {
+              id: "opt-2",
+              title: "Real-time Collaborative Engine (Figma/Linear Style)",
+              description: "Arsitektur event-driven dengan WebSocket / CRDT untuk kerja tim simultan multi-user.",
+              promptPayload: `Target Pengguna: Tim Kolaboratif. Fitur Kunci: Real-time Multi-cursor Collab, Live State Sync, dan Activity Audit Logs.`,
+              badge: "Real-time Team"
+            },
+            {
+              id: "opt-3",
+              title: "Enterprise Multi-Tenant & Autonomous Agent",
+              description: "Skala enterprise dengan isolasi tenant, queue background workers, dan audit compliance.",
+              promptPayload: `Target Pengguna: Enterprise Scale. Fitur Kunci: Multi-tenancy Architecture, Asynchronous Background Queue (Celery/Redis), dan Security Compliance.`,
+              badge: "Enterprise"
+            }
+          ];
+        }
+
+        const replyText = 
+          `### 💡 **1. Analisis Visi & Peluang Unik**\n` +
+          `Ide *"${trimmed}"* memiliki proposisi nilai yang sangat menarik untuk mengotomatisasi alur kerja manual dan memusatkan interaksi pengguna ke dalam satu studio terintegrasi.\n\n` +
+          `### ⚠️ **2. Blindspots & Risiko Tersembunyi**\n` +
+          `1. **Lonjakan Trafik & Concurrency Spike:** Penanganan akses simultan pada momen puncak (misal saat event atau peluncuran).\n` +
+          `2. **Inkonsistensi Integrasi Pihak Ketiga:** Sinkronisasi API pembayaran atau data eksternal dengan mekanisme retry/idempotency.\n` +
+          `3. **Proteksi & Isolasi Data Privasi:** Kebijakan otorisasi data (RBAC) dan kepatuhan standar keamanan data transaksi.\n\n` +
+          `### ❓ **3. 5 Pertanyaan Kritis untuk Menajamkan PRD**\n` +
+          `1. Siapa segmen pengguna utama yang paling diprioritaskan pada peluncuran perdana (MVP)?\n` +
+          `2. Apa 2-3 fitur inti yang paling krusial dan tidak boleh ditunda ke Fase 2?\n` +
+          `3. Bagaimana model transaksi/monetisasi yang direncanakan (komisi, subscription, atau one-time)?\n` +
+          `4. Apakah sistem memerlukan sinkronisasi data real-time (WebSocket) atau cukup request berbasis REST API?\n` +
+          `5. Bagaimana penanganan skenario anomali (misal: pembatalan mendadak atau kegagalan webhook)?\n\n` +
+          `*Pilih salah satu kartu konsep arsitektur di bawah atau ketik kustomisasi Anda untuk melanjutkan ke sintesis PRD.*`;
 
         return {
-          reply: `💡 **Ide Dasar Diterima:** *"${trimmed}"*\n\n` +
-            "Saya telah menganalisis konsep ini dan menyusun **3 alternatif arah produk & arsitektur** yang dapat memperkaya ide Anda (klik salah satu opsi di bawah atau ketik kustomisasi Anda):\n\n" +
-            "---\n" +
-            "🔍 **Aspek Kunci yang Dipertegas:**\n" +
-            "1. **Target Persona Utama:** Siapa pemakai yang paling krusial?\n" +
-            "2. **Fitur Kunci MVP:** Apa 2-3 kapabilitas inti yang wajib ada di versi perdana?\n" +
-            "3. **Arsitektur Data:** Apakah memerlukan integrasi real-time / AI vector store?",
+          reply: replyText,
           nextStep: 1,
           nextInterviewTurn: 2,
           isStepComplete: false,
@@ -55,10 +92,10 @@ export class MockLlmService {
       } else {
         return {
           reply: "✅ **Informasi PRD Sudah Sangat Lengkap & Terstruktur!**\n\n" +
-            "Spesifikasi inti, batasan MVP, dan profil pengguna telah berhasil dirumuskan ke dalam draf `prd.md`.\n\n" +
+            "Spesifikasi inti, batasan cakupan MVP, dan profil pengguna telah berhasil disintesis ke dalam rancangan `prd.md`.\n\n" +
             "---\n\n" +
             "### 🎨 **Tahap 2: Referensi Desain & UI/UX System Specification**\n" +
-            "Silakan unggah **screenshot referensi UI / mockup**, masukkan **URL referensi visual** (*figma.com, linear.app, raycast.com*), atau pilih preset gaya visual pada panel interaktif di bawah.",
+            "Silakan unggah **screenshot referensi UI / mockup**, masukkan **URL referensi visual** (*figma.com, linear.app, raycast.com*), atau pilih preset gaya visual pada panel di bawah.",
           nextStep: 2,
           nextInterviewTurn: 1,
           isStepComplete: true,
@@ -67,19 +104,18 @@ export class MockLlmService {
       }
     }
 
-    // Step 2: Design References Analysis
+    // Step 2: Visual Design System
     if (step === 2) {
       return {
-        reply: `🎯 **Analisis Gaya Desain Berhasil Dipetakan!**\n\n` +
-          `Panduan visual *"${trimmed}"* telah diekstrak ke dalam arsitektur antarmuka:\n` +
-          "• **Design Archetype:** Modern SaaS Web Studio (Deep Obsidian Canvas + Electric Indigo Accent)\n" +
-          "• **Layout Topology:** Collapsible Nav Sidebar + Main Workspace Canvas + Embedded Inspector Grid\n" +
-          "• **Design Tokens:** Standar WCAG 2.1 AA (kontras > 4.5:1), 60fps CSS micro-interactions.\n\n" +
-          "Spesifikasi ini siap disematkan ke dalam cetak biru `systemdesign.md`.\n\n" +
-          "---\n\n" +
-          "### ⚡ **Tahap 3: Kurasi Skill Agen AI (Simulasi Penelusuran Tren GitHub)**\n" +
-          "Sistem telah melakukan simulasi penelusuran tren teknologi terbaru tahun ini.\n\n" +
-          "Berikut daftar skill standar dan rekomendasi tren. Anda dapat **menambah skill custom**, **memilih/menghapus skill**, atau klik **'Setujui Skill & Generate Artifacts'**.",
+        reply: `🎯 **Analisis Desain UI Berhasil Diekstrak!**\n\n` +
+          `Panduan visual *"${trimmed}"* telah dipetakan ke dalam arsitektur antarmuka:\n` +
+          `• **Design Archetype:** Modern SaaS Studio (Obsidian Canvas + Electric Indigo Accent)\n` +
+          `• **Layout Topology:** Collapsible Nav Sidebar + Workspace Canvas + Inspector Grid\n` +
+          `• **Design Tokens:** Standar WCAG 2.1 AA (kontras > 4.5:1), 60fps hardware-accelerated micro-interactions.\n\n` +
+          `Spesifikasi ini siap disematkan ke dalam cetak biru \`systemdesign.md\`.\n\n` +
+          `---\n\n` +
+          `### ⚡ **Tahap 3: Kurasi Skill Agen AI**\n` +
+          `Sistem telah memuat 9 skill rekayasa standar. Tinjau kartu skill di bawah dan klik **'Setujui Skill & Generate Artifacts'**.`,
         nextStep: 3,
         nextInterviewTurn: 1,
         isStepComplete: true,
@@ -88,49 +124,26 @@ export class MockLlmService {
       };
     }
 
-    // Step 3: Skills Confirmation & Completion
+    // Step 3: Confirm Skills
     if (step === 3) {
       return {
-        reply: "🎉 **Semua 3 Tahapan Selesai! Skill & Konfigurasi Telah Disetujui.**\n\n" +
-          "Seluruh 4 berkas artefak markdown telah berhasil di-generate secara lengkap dan siap Anda unduh:\n" +
-          "1. `prd.md` — Product Requirements Document yang kaya & executable.\n" +
-          "2. `list_skills.md` — Daftar skill pilihan lengkap dengan link GitHub & keunggulan.\n" +
-          "3. `systemdesign.md` — Arsitektur sistem, skema database, dan panduan desain UI SaaS Studio.\n" +
-          "4. `readme.md` — Dokumentasi proyek, tech stack, dan panduan setup.\n\n" +
-          "Silakan klik tombol unduh pada panel di bawah ini.",
+        reply: `🎉 **Semua Tahap Selesai! Seluruh 4 Berkas Artefak Markdown Siap Diunduh.**\n\n` +
+          `1. \`prd.md\` — Product Requirements Document yang kaya & executable.\n` +
+          `2. \`list_skills.md\` — Matriks skill pilihan dengan tautan repositori GitHub & keunggulan.\n` +
+          `3. \`systemdesign.md\` — Arsitektur sistem, skema data flow, dan design tokens UI.\n` +
+          `4. \`readme.md\` — Dokumentasi proyek, tech stack, dan panduan instalasi/setup.\n\n` +
+          `Silakan klik tombol download di panel bawah.`,
         nextStep: 4,
         nextInterviewTurn: 1,
         isStepComplete: true
       };
     }
 
-    // Step 4: Finished state
     return {
-      reply: "Proses inisiasi proyek telah selesai! Anda dapat mengunduh 4 file markdown di bawah atau mereset wizard untuk proyek baru.",
+      reply: "Proyek telah selesai diinisiasi! Seluruh berkas artefak markdown dapat diunduh di atas.",
       nextStep: 4,
       nextInterviewTurn: 1,
       isStepComplete: true
-    };
-  }
-
-  async searchTrendSkill(customSkillName) {
-    await new Promise((resolve) => setTimeout(resolve, 400));
-    const sanitized = customSkillName.trim();
-    const slug = sanitized.toLowerCase().replace(/[^a-z0-9]/g, "-");
-
-    return {
-      id: `custom-${slug}-${Date.now()}`,
-      name: sanitized,
-      category: "Development",
-      githubUrl: `https://github.com/topics/${slug}`,
-      description: `Perkakas otomatisasi cerdas untuk ${sanitized}, mendukung integrasi pipeline agentik modern.`,
-      advantages: [
-        `Kompatibilitas tinggi dengan ekosistem ${sanitized}`,
-        "Optimasi throughput dan latensi rendah",
-        "Dokumentasi API lengkap dengan dukungan komunitas aktif"
-      ],
-      installGuide: `npm install @skills/${slug} || pip install ${slug}`,
-      selected: true
     };
   }
 }
