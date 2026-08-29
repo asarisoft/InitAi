@@ -9,7 +9,7 @@ def test_health_check():
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "ok"
-    assert "Idea Enrichment" in data["features"]
+    assert "Proactive Idea Enrichment" in data["features"]
 
 def test_get_skills():
     response = client.get("/skills")
