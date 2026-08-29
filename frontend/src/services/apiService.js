@@ -27,7 +27,8 @@ export const apiService = {
           nextInterviewTurn: data.interview_turn,
           isStepComplete: data.is_step_complete,
           extractedData: data.data_extracted || {},
-          suggestedSkills: data.suggested_skills
+          suggestedSkills: data.suggested_skills,
+          suggestedOptions: data.suggested_options
         };
       }
     } catch (e) {

@@ -1,43 +1,64 @@
 import { INITIAL_SKILLS } from '../utils/defaultSkills';
 
-/**
- * Client-side Intelligent Mock LLM Engine
- * Simulates a dynamic conversation with state tracking and simulated web trend searching.
- */
-
 export class MockLlmService {
   constructor() {
     this.skills = JSON.parse(JSON.stringify(INITIAL_SKILLS));
   }
 
   async processMessage({ message, step, interviewTurn, projectData }) {
-    // Simulate natural LLM latency (300ms - 600ms)
-    await new Promise((resolve) => setTimeout(resolve, 450));
+    await new Promise((resolve) => setTimeout(resolve, 380));
 
     const trimmed = message.trim();
+    const clean = trimmed.toLowerCase();
 
-    // Step 1: PRD Interview Loop
+    // Step 1: PRD Interview Loop & Idea Enrichment
     if (step === 1) {
       if (interviewTurn === 1) {
+        let suggestedOptions = [
+          {
+            id: "opt-1",
+            title: "B2B SaaS Pro Studio (Recommended MVP)",
+            description: "Targetkan Tim Engineering & Designer dengan fitur Role-Based Access, Real-time Collab, dan Export Multi-Format.",
+            promptPayload: "Target Pengguna: Tim B2B Engineering & Design. Fitur Kunci: Real-time Multi-cursor Collab, Web Worker, dan Export High-Resolution.",
+            badge: "B2B Pro"
+          },
+          {
+            id: "opt-2",
+            title: "Developer-First Platform with API & SDK",
+            description: "Targetkan Full-Stack Developers dengan Headless Architecture, Webhooks, dan Embeddable SDK.",
+            promptPayload: "Target Pengguna: Full-Stack Developers. Fitur Kunci: Headless REST/WebSocket API, CLI tooling, dan Webhook Integrations.",
+            badge: "Dev Platform"
+          },
+          {
+            id: "opt-3",
+            title: "AI-Autonomous Workflow Studio",
+            description: "Targetkan Otomasi Mandiri dengan Background Task Queues, Redis Caching, dan Markdown Artifact Exporter.",
+            promptPayload: "Target Pengguna: Produktivitas Tim. Fitur Kunci: Asynchronous Task Runner, Redis Cache, dan Automated Markdown Deliverables.",
+            badge: "AI Automation"
+          }
+        ];
+
         return {
-          reply: `💡 **Ide Proyek Diterima:** *"${trimmed}"*\n\n` +
-            "Untuk menyusun `prd.md` yang kaya dan *executable*, mari pertegas 2 poin berikut:\n" +
-            "1. **Target Pengguna Utama:** Siapa yang akan paling sering memakai produk ini?\n" +
-            "2. **Fitur Kunci MVP (Fase 1):** Apa 2-3 fitur wajib yang harus ada di versi perdana?\n\n" +
-            "*(Jawab secara ringkas, AI akan mensintesis spesifikasi lengkapnya.)*",
+          reply: `💡 **Ide Dasar Diterima:** *"${trimmed}"*\n\n` +
+            "Saya telah menganalisis konsep ini dan menyusun **3 alternatif arah produk & arsitektur** yang dapat memperkaya ide Anda (klik salah satu opsi di bawah atau ketik kustomisasi Anda):\n\n" +
+            "---\n" +
+            "🔍 **Aspek Kunci yang Dipertegas:**\n" +
+            "1. **Target Persona Utama:** Siapa pemakai yang paling krusial?\n" +
+            "2. **Fitur Kunci MVP:** Apa 2-3 kapabilitas inti yang wajib ada di versi perdana?\n" +
+            "3. **Arsitektur Data:** Apakah memerlukan integrasi real-time / AI vector store?",
           nextStep: 1,
           nextInterviewTurn: 2,
           isStepComplete: false,
-          extractedData: { coreIdea: trimmed }
+          extractedData: { coreIdea: trimmed },
+          suggestedOptions
         };
       } else {
-        // Step 1 Turn 2: LLM determines that information is now sufficient!
         return {
-          reply: "✅ **Informasi PRD Sudah Cukup Lengkap & Matang!**\n\n" +
+          reply: "✅ **Informasi PRD Sudah Sangat Lengkap & Terstruktur!**\n\n" +
             "Spesifikasi inti, batasan MVP, dan profil pengguna telah berhasil dirumuskan ke dalam draf `prd.md`.\n\n" +
             "---\n\n" +
-            "### 🎨 **Tahap 2: Referensi Desain & UI/UX**\n" +
-            "Silakan masukkan **URL referensi visual** (misal: *pacdora.com*, *figma.com*, *linear.app*) atau **deskripsi gaya visual** yang diinginkan (contoh: *Dark mode elegan, clean SaaS Web Studio, glassmorphism, accent purple glow*).",
+            "### 🎨 **Tahap 2: Referensi Desain & UI/UX System Specification**\n" +
+            "Silakan unggah **screenshot referensi UI / mockup**, masukkan **URL referensi visual** (*pacdora.com, figma.com, linear.app*), atau pilih preset gaya visual pada panel interaktif di bawah.",
           nextStep: 2,
           nextInterviewTurn: 1,
           isStepComplete: true,
@@ -49,16 +70,16 @@ export class MockLlmService {
     // Step 2: Design References Analysis
     if (step === 2) {
       return {
-        reply: `🎯 **Analisis Gaya Desain Berhasil!**\n\n` +
-          `Referensi visual *"${trimmed}"* telah dipetakan ke dalam arsitektur UI:\n` +
-          "• **Theme Palette:** Modern Dark/Light SaaS Studio (Deep obsidian canvas + Indigo/Emerald accents)\n" +
-          "• **Layout Structure:** Collapsible Sidebar Navigation + Workspace Chat Panel + Interactive Inspector Grid\n" +
-          "• **Design Tokens:** Standar WCAG AA (kontras > 4.5:1), smooth 60fps micro-interactions, dan modular CSS.\n\n" +
-          "Data ini siap disematkan ke dalam rancangan `systemdesign.md`.\n\n" +
+        reply: `🎯 **Analisis Gaya Desain Berhasil Dipetakan!**\n\n` +
+          `Panduan visual *"${trimmed}"* telah diekstrak ke dalam arsitektur antarmuka:\n` +
+          "• **Design Archetype:** Modern SaaS Web Studio (Deep Obsidian Canvas + Electric Indigo Accent)\n" +
+          "• **Layout Topology:** Collapsible Nav Sidebar + Main Workspace Canvas + Embedded Inspector Grid\n" +
+          "• **Design Tokens:** Standar WCAG 2.1 AA (kontras > 4.5:1), 60fps CSS micro-interactions.\n\n" +
+          "Spesifikasi ini siap disematkan ke dalam cetak biru `systemdesign.md`.\n\n" +
           "---\n\n" +
-          "### ⚡ **Tahap 3: Konfirmasi Skill & Rekomendasi Tren AI (Web Search Simulation)**\n" +
+          "### ⚡ **Tahap 3: Kurasi Skill Agen AI (Simulasi Penelusuran Tren GitHub)**\n" +
           "Sistem telah melakukan simulasi penelusuran tren teknologi terbaru tahun ini.\n\n" +
-          "Berikut daftar skill standar dan rekomendasi tren. Anda dapat **menambah skill custom**, **memilih/menghapus skill**, atau klik **'Selesai & Generate Files'**.",
+          "Berikut daftar skill standar dan rekomendasi tren. Anda dapat **menambah skill custom**, **memilih/menghapus skill**, atau klik **'Setujui Skill & Generate Artifacts'**.",
         nextStep: 3,
         nextInterviewTurn: 1,
         isStepComplete: true,
@@ -72,7 +93,7 @@ export class MockLlmService {
       return {
         reply: "🎉 **Semua 3 Tahapan Selesai! Skill & Konfigurasi Telah Disetujui.**\n\n" +
           "Seluruh artefak markdown telah berhasil di-generate secara lengkap dan siap Anda unduh:\n" +
-          "1. `prd.md` — Product Requirements Document yang *executable*.\n" +
+          "1. `prd.md` — Product Requirements Document yang kaya & executable.\n" +
           "2. `list_skills.md` — Daftar skill pilihan lengkap dengan link GitHub & keunggulan.\n" +
           "3. `systemdesign.md` — Arsitektur sistem, skema database, dan panduan desain UI SaaS Studio.\n\n" +
           "Silakan klik tombol unduh pada panel di bawah ini.",
@@ -84,19 +105,15 @@ export class MockLlmService {
 
     // Step 4: Finished state
     return {
-      reply: "Proses pembuatan proyek telah selesai! Anda dapat mengunduh 3 file markdown di bawah atau mereset wizard untuk proyek baru.",
+      reply: "Proses inisiasi proyek telah selesai! Anda dapat mengunduh 3 file markdown di bawah atau mereset wizard untuk proyek baru.",
       nextStep: 4,
       nextInterviewTurn: 1,
       isStepComplete: true
     };
   }
 
-  /**
-   * Simulate AI Web Trend Search for custom skill added by user
-   */
   async searchTrendSkill(customSkillName) {
-    await new Promise((resolve) => setTimeout(resolve, 600));
-
+    await new Promise((resolve) => setTimeout(resolve, 400));
     const sanitized = customSkillName.trim();
     const slug = sanitized.toLowerCase().replace(/[^a-z0-9]/g, "-");
 

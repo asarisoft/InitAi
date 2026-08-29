@@ -14,6 +14,7 @@ export default function ChatBox({
   onAddCustomSkill,
   onConfirmSkills,
   onConfirmDesign,
+  onSelectOption,
   projectData
 }) {
   const bottomRef = useRef(null);
@@ -25,7 +26,11 @@ export default function ChatBox({
   return (
     <div className="chat-history-scroll">
       {messages.map((msg, index) => (
-        <MessageItem key={index} message={msg} />
+        <MessageItem
+          key={index}
+          message={msg}
+          onSelectOption={onSelectOption}
+        />
       ))}
 
       {isTyping && (

@@ -1,15 +1,17 @@
+import os
+import re
+from typing import List, Optional, Dict, Any
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any
 
 app = FastAPI(
-    title="InitAI Backend API",
-    description="Backend API for InitAI AI Agent Web Studio",
-    version="1.0.0"
+    title="InitAI Backend API & Idea Enrichment Engine",
+    description="Intelligent Conversational AI Backend with Proactive Idea Enrichment & Tool Calling Architecture",
+    version="2.0.0"
 )
 
-# Enable CORS for frontend integration
+# Enable CORS for local & containerized frontend communication
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,7 +20,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ----------------- Data Models -----------------
+# ----------------- Data Models (Pydantic v2) -----------------
+
+class SuggestedOption(BaseModel):
+    id: str
+    title: str
+    description: str
+    prompt_payload: str
+    badge: Optional[str] = "Rekomendasi"
 
 class SkillItem(BaseModel):
     id: str
@@ -37,9 +46,9 @@ class ChatMessage(BaseModel):
 
 class ChatRequest(BaseModel):
     message: str
-    step: int = 1 # 1: PRD Interview, 2: Design Ref, 3: Skills, 4: Done
+    step: int = 1  # 1: PRD Interview, 2: Design Ref, 3: Skills, 4: Done
     interview_turn: int = 1
-    conversation_history: List[ChatMessage] = []
+    conversation_history: List[ChatMessage] = Field(default_factory=list)
     selected_skills: Optional[List[SkillItem]] = None
     project_data: Optional[Dict[str, Any]] = Field(default_factory=dict)
 
@@ -50,21 +59,23 @@ class ChatResponse(BaseModel):
     is_step_complete: bool
     data_extracted: Optional[Dict[str, Any]] = None
     suggested_skills: Optional[List[SkillItem]] = None
+    suggested_options: Optional[List[SuggestedOption]] = None
 
 class GenerateFilesRequest(BaseModel):
     project_name: str = "My Project"
     prd_summary: str
-    target_users: Optional[str] = "Developers and Designers"
-    tech_stack: Optional[str] = "ReactJS, FastAPI, Docker, TailwindCSS"
+    target_users: Optional[str] = "Full-Stack Developers, Product Managers, and AI Engineers"
+    tech_stack: Optional[str] = "React 18, FastAPI, Docker, TailwindCSS"
     design_references: Optional[str] = "Modern Dark/Light SaaS Studio (Pacdora/Figma style)"
-    selected_skills: List[SkillItem] = []
+    selected_skills: List[SkillItem] = Field(default_factory=list)
+    design_images: Optional[List[Dict[str, Any]]] = Field(default_factory=list)
 
 class GenerateFilesResponse(BaseModel):
     prd_md: str
     list_skills_md: str
     systemdesign_md: str
 
-# ----------------- Mock Data & Helpers -----------------
+# ----------------- Dataset & Tool Calling Registry -----------------
 
 DEFAULT_TREND_SKILLS: List[SkillItem] = [
     SkillItem(
@@ -150,11 +161,100 @@ DEFAULT_TREND_SKILLS: List[SkillItem] = [
     )
 ]
 
-# ----------------- Endpoints -----------------
+# ----------------- Idea Enrichment & Tool Functions -----------------
+
+def enrich_user_idea(user_input: str) -> List[SuggestedOption]:
+    """
+    Analyzes user idea and proactively generates 3-4 high-value feature & architecture variations.
+    Provides clickable options for aspects the user might not have thought of yet.
+    """
+    clean = user_input.lower()
+
+    if any(k in clean for k in ["ecommerce", "toko", "shop", "marketplace", "retail"]):
+        return [
+            SuggestedOption(
+                id="opt-ecom-1",
+                title="B2C Personalized AI Shopping Studio",
+                description="Katalog produk dengan rekomendasi visual AI, keranjang instan, & checkout Stripe.",
+                prompt_payload="Fokuskan target pada Pembeli Online (B2C) dengan fitur kunci AI Recommendation Engine, Cart Caching Redis, dan Payment Gateway terintegrasi.",
+                badge="B2C Flow"
+            ),
+            SuggestedOption(
+                id="opt-ecom-2",
+                title="Multi-Vendor Marketplace & Vendor Hub",
+                description="Dashboard merchant mandiri, manajemen inventori real-time, dan split payment.",
+                prompt_payload="Fokuskan pada Multi-Tenant Marketplace untuk Vendor UMKM dengan fitur Dashboard Analitik Penjualan dan Real-time Stock Sync.",
+                badge="Multi-Vendor"
+            ),
+            SuggestedOption(
+                id="opt-ecom-3",
+                title="AI Social Commerce & Automated Live Chat",
+                description="Chatbot penjualan cerdas terintegrasi WhatsApp & Instagram API.",
+                prompt_payload="Targetkan Social Commerce dengan fitur AI Sales Assistant, WhatsApp CRM webhook, dan One-click Checkout.",
+                badge="Conversational"
+            )
+        ]
+
+    elif any(k in clean for k in ["saas", "agent", "ai", "studio", "packag", "cad", "design"]):
+        return [
+            SuggestedOption(
+                id="opt-saas-1",
+                title="B2B Pro Studio with Real-time Collaboration",
+                description="Kanvas interaktif dengan multi-cursor CRDT (Figma style), Web Worker, dan export 8K.",
+                prompt_payload="Target Pengguna: Tim Desainer & Product Engineer B2B. Fitur Kunci: Real-time Multi-cursor Collab, WASM Geometry Kernel, dan Export Multi-format (PDF/PNG/DXF).",
+                badge="Enterprise B2B"
+            ),
+            SuggestedOption(
+                id="opt-saas-2",
+                title="Developer-First Platform with API & Webhooks",
+                description="Headless architecture dengan REST & WebSocket API, CLI tool, dan SDK embeddable.",
+                prompt_payload="Target Pengguna: Full-Stack Developers & AI Engineers. Fitur Kunci: Headless API, Embeddable SDK, dan Webhook Dispatcher untuk CI/CD pipeline.",
+                badge="Developer Tool"
+            ),
+            SuggestedOption(
+                id="opt-saas-3",
+                title="Self-Hosted / Zero-Cloud Privacy Edition",
+                description="Berjalan 100% lokal di browser client / local Docker tanpa ketergantungan external cloud.",
+                prompt_payload="Target Pengguna: Perusahaan dengan standar privasi tinggi. Fitur Kunci: 100% Offline Local Inference, Client-side Blob generation, dan Zero-Data-Logging.",
+                badge="High Privacy"
+            )
+        ]
+
+    else:
+        return [
+            SuggestedOption(
+                id="opt-gen-1",
+                title="Opsi A: SaaS Web App Terintegrasi (Recommended MVP)",
+                description="Fokus pada alur pengguna intuitif, auth berbasis JWT/OAuth, dan dashboard analitik.",
+                prompt_payload=f"Targetkan Developer & Tim Bisnis untuk {user_input} dengan fitur Authenticated Dashboard, Role-Based Access Control, dan Event Webhooks.",
+                badge="SaaS MVP"
+            ),
+            SuggestedOption(
+                id="opt-gen-2",
+                title="Opsi B: Real-time Collaborative Engine",
+                description="Arsitektur event-driven dengan WebSocket broker untuk kerja tim simultan.",
+                prompt_payload=f"Targetkan Tim Kolaboratif untuk {user_input} dengan fitur Live Multi-user Presence, Activity Audit Log, dan Instant Notification.",
+                badge="Real-time Team"
+            ),
+            SuggestedOption(
+                id="opt-gen-3",
+                title="Opsi C: AI-Powered Autonomous Automation",
+                description="Fokus pada otomasi workflow mandiri dengan scheduled background workers & task queues.",
+                prompt_payload=f"Targetkan Otomasi Alur Kerja untuk {user_input} dengan fitur Asynchronous Task Queue (Celery/Redis), Webhook Triggers, dan Auto-reporting Markdown.",
+                badge="AI Automation"
+            )
+        ]
+
+# ----------------- Core API Endpoints -----------------
 
 @app.get("/health")
 def health_check():
-    return {"status": "ok", "app": "InitAI Backend", "version": "1.0.0"}
+    return {
+        "status": "ok",
+        "app": "InitAI Backend",
+        "version": "2.0.0",
+        "features": ["Idea Enrichment", "Tool Calling Architecture", "Pydantic v2 Contracts"]
+    }
 
 @app.get("/skills", response_model=List[SkillItem])
 def get_skills():
@@ -166,32 +266,37 @@ def handle_chat(req: ChatRequest):
     user_input = req.message.strip()
     turn = req.interview_turn
 
-    # Step 1: PRD Interview Loop
+    # ----------------- Step 1: PRD Interview & Proactive Idea Enrichment -----------------
     if step == 1:
         if turn == 1:
-            # First turn: AI asks follow-up on target audience & key MVP features
+            # Proactively enrich user idea and propose 3 clickable options
+            suggested_opts = enrich_user_idea(user_input)
+            
             reply = (
-                f"💡 **Ide Proyek Diterima:** *\"{user_input}\"*\n\n"
-                "Untuk menyusun `prd.md` yang kaya dan *executable*, mari pertegas 2 poin berikut:\n"
-                "1. **Target Pengguna Utama:** Siapa yang akan paling sering memakai produk ini?\n"
-                "2. **Fitur Kunci MVP (Fase 1):** Apa 2-3 fitur wajib yang harus ada di versi perdana?\n\n"
-                "*(Jawab singkat saja, AI akan merangkum seluruh spesifikasinya.)*"
+                f"💡 **Ide Dasar Diterima:** *\"{user_input}\"*\n\n"
+                "Saya telah menganalisis konsep ini dan menyusun **3 alternatif arah produk & arsitektur** yang dapat memperkaya ide Anda (klik salah satu opsi di bawah atau ketik kustomisasi Anda):\n\n"
+                "--- \n"
+                "🔍 **Aspek Penting yang Perlu Dipertegas:**\n"
+                "1. **Target Persona Utama:** Siapa pemakai yang paling krusial?\n"
+                "2. **Fitur Kunci MVP (Fase 1):** Apa 2-3 kapabilitas inti yang wajib ada?\n"
+                "3. **Arsitektur Data:** Apakah memerlukan integrasi real-time / AI vector store?"
             )
             return ChatResponse(
                 reply=reply,
                 next_step=1,
                 interview_turn=2,
                 is_step_complete=False,
-                data_extracted={"core_idea": user_input}
+                data_extracted={"core_idea": user_input},
+                suggested_options=suggested_opts
             )
         else:
-            # Second turn: Info is sufficient! Transition to Step 2
+            # Step 1 Turn 2: Information is now mature & complete!
             reply = (
-                "✅ **Informasi PRD Sudah Cukup Lengkap & Matang!**\n\n"
-                "Spesifikasi inti, target persona, dan batasan MVP telah berhasil dirumuskan ke dalam draf `prd.md`.\n\n"
+                "✅ **Informasi PRD Sudah Sangat Lengkap & Terstruktur!**\n\n"
+                "Spesifikasi inti, persona pengguna, dan batasan cakupan MVP telah berhasil disintesis ke dalam rancangan `prd.md`.\n\n"
                 "--- \n\n"
-                "### 🎨 **Tahap 2: Referensi Desain & UI/UX**\n"
-                "Silakan masukkan **URL referensi visual** (misal: *pacdora.com*, *figma.com*, *linear.app*) atau **deskripsi gaya visual** yang diinginkan (contoh: *Dark mode elegan, clean SaaS Web Studio, glassmorphism, accent purple glow*)."
+                "### 🎨 **Tahap 2: Referensi Desain & UI/UX System Specification**\n"
+                "Silakan unggah **screenshot referensi UI / mockup**, masukkan **URL referensi visual** (*pacdora.com, figma.com, linear.app*), atau pilih preset gaya visual pada panel interaktif di bawah."
             )
             return ChatResponse(
                 reply=reply,
@@ -201,19 +306,19 @@ def handle_chat(req: ChatRequest):
                 data_extracted={"prd_details": user_input}
             )
 
-    # Step 2: Design References Analysis
+    # ----------------- Step 2: Visual Design System & Image References -----------------
     elif step == 2:
         reply = (
-            f"🎯 **Analisis Gaya Desain Berhasil!**\n\n"
-            f"Referensi visual *\"{user_input}\"* telah dipetakan ke dalam panduan arsitektur UI:\n"
-            "• **Theme Palette:** Modern Dark/Light SaaS Studio (Deep slate background + Neon emerald / Indigo accents)\n"
-            "• **Layout Structure:** Collapsible Sidebar Navigation + Workspace Chat Panel + Interactive Inspector Grid\n"
-            "• **Design Tokens:** Standar WCAG AA (kontras > 4.5:1), smooth 60fps micro-animations, dan modular responsive layout.\n\n"
-            "Data ini siap disematkan ke dalam rancangan `systemdesign.md`.\n\n"
+            f"🎯 **Analisis Gaya Desain Berhasil Dipetakan!**\n\n"
+            f"Panduan visual *\"{user_input}\"* telah diekstrak ke dalam arsitektur antarmuka:\n"
+            "• **Design Archetype:** Modern SaaS Web Studio (Deep Obsidian Canvas + Electric Indigo Accent)\n"
+            "• **Layout Topology:** Collapsible Nav Sidebar + Main Workspace Canvas + Embedded Inspector Grid\n"
+            "• **Design Tokens:** Standar WCAG 2.1 AA (kontras > 4.5:1), 60fps CSS hardware-accelerated micro-interactions.\n\n"
+            "Spesifikasi ini siap disematkan ke dalam cetak biru `systemdesign.md`.\n\n"
             "--- \n\n"
-            "### ⚡ **Tahap 3: Konfirmasi Skill & Rekomendasi Tren AI (Web Search Simulation)**\n"
-            "Sistem telah melakukan penelusuran tren teknologi terbaru. Berikut daftar 9 skill agen standar yang disarankan untuk proyek Anda.\n\n"
-            "Silakan tinjau kartu skill di bawah ini. Anda dapat **menambah skill custom**, **memilih/menghapus skill**, atau klik **'Selesai & Generate Files'** jika sudah sesuai."
+            "### ⚡ **Tahap 3: Kurasi Skill Agen AI (Simulasi Penelusuran Tren GitHub)**\n"
+            "Sistem telah menjalankan penelusuran tren perkakas terbaru. Berikut matriks 9 skill standar beserta repositori GitHub & keunggulannya.\n\n"
+            "Silakan tinjau kartu skill di bawah. Anda dapat **mengaktifkan/menonaktifkan skill**, **menambah skill custom**, atau klik **'Setujui Skill & Generate Artifacts'**."
         )
         return ChatResponse(
             reply=reply,
@@ -224,16 +329,16 @@ def handle_chat(req: ChatRequest):
             suggested_skills=DEFAULT_TREND_SKILLS
         )
 
-    # Step 3: Skills Confirmation & Completion
+    # ----------------- Step 3: Skill Confirmation & Readiness -----------------
     elif step == 3:
         skills_count = len(req.selected_skills) if req.selected_skills else len(DEFAULT_TREND_SKILLS)
         reply = (
-            f"🎉 **Semua 3 Tahapan Selesai! {skills_count} Skill Siap Dikonfigurasi.**\n\n"
-            "Seluruh artefak markdown telah berhasil di-generate secara lengkap dan siap Anda unduh:\n"
-            "1. `prd.md` — Product Requirements Document yang *executable*.\n"
-            "2. `list_skills.md` — Daftar skill pilihan lengkap dengan link GitHub & keunggulan.\n"
-            "3. `systemdesign.md` — Arsitektur sistem, skema database, dan panduan desain UI SaaS Studio.\n\n"
-            "Silakan klik tombol unduh pada panel file di bawah ini."
+            f"🎉 **Semua 3 Tahap Selesai! {skills_count} Skill Siap Dikonfigurasi.**\n\n"
+            "Seluruh artefak markdown siap diunduh:\n"
+            "1. `prd.md` — Product Requirements Document yang kaya & executable.\n"
+            "2. `list_skills.md` — Matriks skill pilihan dengan tautan repositori GitHub & keunggulan.\n"
+            "3. `systemdesign.md` — Arsitektur sistem, skema data flow, dan design tokens UI.\n\n"
+            "Silakan klik tombol unduh pada panel di bawah."
         )
         return ChatResponse(
             reply=reply,
@@ -242,36 +347,42 @@ def handle_chat(req: ChatRequest):
             is_step_complete=True
         )
 
+    # ----------------- Step 4: Completed -----------------
     else:
         return ChatResponse(
-            reply="Proses konfigurasi telah selesai. Anda dapat mendownload seluruh file artefak di bawah.",
+            reply="Proyek telah selesai diinisiasi! Seluruh berkas artefak markdown dapat diunduh pada panel di atas.",
             next_step=4,
             interview_turn=1,
             is_step_complete=True
         )
+
+# ----------------- File Generation Endpoint -----------------
 
 @app.post("/generate-files", response_model=GenerateFilesResponse)
 def generate_files(payload: GenerateFilesRequest):
     # 1. Generate prd.md
     prd_content = f"""# Product Requirements Document (PRD) — {payload.project_name}
 
-## 1. Executive Summary
+## 1. Executive Summary & Problem Statement
 {payload.prd_summary}
 
-## 2. Target Users & Personas
-- **Primary Users:** {payload.target_users}
-- **Need:** Memerlukan platform otomasi cerdas yang modular, cepat, dan mudah dioperasikan.
+## 2. Target Users & Persona Specifications
+- **Primary Audience:** {payload.target_users}
+- **Value Proposition:** Mengeliminasi friksi inisiasi software melalui panduan interview interaktif, kurasi toolchain cerdas, dan arsitektur modular terverifikasi.
 
-## 3. Core MVP Features
-- [x] **Interactive AI Interview Wizard:** 3-step dynamic conversation loop with completeness checks.
-- [x] **Real-time Skill Customization:** Categorized skill grid with live trend recommendations.
-- [x] **Zero-Friction Markdown Artifact Generator:** Auto-packaging PRD, Skills, and System Architecture into downloadable files.
+## 3. Core Functional MVP Capabilities
+- [x] **Interactive Conversational Wizard (3 Steps):**
+  1. *Step 1 (PRD Interview):* Proactive Idea Enrichment loop with multi-option suggestions.
+  2. *Step 2 (Design References):* UI token extraction from reference URLs and attached mockups.
+  3. *Step 3 (Skill Selection):* Curated AI agent skill matrix with trend search capabilities.
+- [x] **Skill Customization Engine:** Filter kategori (Development, UI/UX, Code Review, Security, DevOps) dan penambahan skill custom.
+- [x] **Zero-Friction Artifact Export:** In-memory generator untuk 3 file markdown (`prd.md`, `list_skills.md`, `systemdesign.md`).
 
-## 4. Technical Stack Recommendation
-- **Frontend:** {payload.tech_stack.split(',')[0].strip() if ',' in payload.tech_stack else payload.tech_stack} (Vite + ReactJS)
-- **Backend:** FastAPI (Python 3.11+, Asynchronous, Uvicorn)
-- **Containerization:** Docker & Docker Compose
-- **Design Tokens:** Modern SaaS Studio Theme (WCAG AA Compliant)
+## 4. Technical Architecture Recommendation
+- **Frontend Framework:** {payload.tech_stack.split(',')[0].strip() if ',' in payload.tech_stack else payload.tech_stack}
+- **Backend Architecture:** FastAPI (Python 3.11+, Asynchronous, Uvicorn)
+- **Infrastructure:** Multi-stage Docker & Docker Compose
+- **Design Tokens:** Modern SaaS Web Studio Theme (WCAG AA Compliant)
 
 ## 5. Acceptance Criteria
 - [x] Web client renders with zero console errors.
@@ -293,55 +404,76 @@ def generate_files(payload: GenerateFilesRequest):
 - **Panduan Instalasi:** `{install}`
 """)
 
-    skills_content = f"""# Approved AI Agent Skills & Toolchain
+    skills_content = f"""# Approved AI Agent Skills & Toolchain — {payload.project_name}
 
-Daftar skill dan perkakas terverifikasi untuk proyek **{payload.project_name}**:
+Dokumen ini berisi daftar skill dan perkakas terverifikasi untuk proyek **{payload.project_name}**:
 
 {"".join(skills_lines)}
 
 ---
+## Ringkasan Matriks
+- **Total Skill Terintegrasi:** {len(skills)} Skill
+- **Status:** Approved for Production Handoff
+
 *Dihasilkan secara otomatis oleh InitAI Agent Studio.*
 """
 
     # 3. Generate systemdesign.md
-    sysdesign_content = f"""# System Design & Architecture — {payload.project_name}
+    images_ref = ""
+    if payload.design_images and len(payload.design_images) > 0:
+        names = [f"`{img.get('name', 'image')}`" for img in payload.design_images]
+        images_ref = f"- **Attached Visual Assets / Mockups:** {', '.join(names)}\n"
+
+    sysdesign_content = f"""# System Design & Architecture Blueprint — {payload.project_name}
 
 ## 1. High-Level Architecture Overview
-Sistem dibangun mengadopsi arsitektur **Web Studio SaaS** (terinspirasi dari Pacdora/Figma) yang memisahkan client presentation tier dan asynchronous backend service.
+Sistem mengadopsi pola arsitektur **Modern Web Studio SaaS** (terinspirasi dari platform terkemuka seperti Pacdora & Figma) yang memisahkan client presentation tier dan asynchronous backend service.
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│              Client Browser (React 18 + Vite)           │
-│  - Modern SaaS Studio Layout (Sidebar + Chat + Grid)     │
-│  - Zero-Backend Mock Fallback Engine                    │
-│  - Client-Side Markdown & Blob Stream Exporter          │
-└───────────────────────────┬─────────────────────────────┘
-                            │ HTTP REST / WebSocket
-┌───────────────────────────▼─────────────────────────────┐
-│              FastAPI Asynchronous Backend Tier          │
-│  - Multi-turn Conversational Interview Handler          │
-│  - Live AI Skill Recommendation & Trend Search Engine   │
-│  - OpenAPI & Pydantic Data Contract Validation          │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                 Browser Client (React 18 + Vite)            │
+│  - Studio Layout: Collapsible Sidebar + Chat Canvas + Grid  │
+│  - Zero-Backend Fallback Engine (Local Mock LLM)           │
+│  - In-Memory Blob Exporter (Multi-file Markdown Generator)  │
+└──────────────────────────────┬──────────────────────────────┘
+                               │ REST / JSON (Optional)
+┌──────────────────────────────▼──────────────────────────────┐
+│                 FastAPI Asynchronous Backend                │
+│  - Multi-turn Conversational Interview Handler              │
+│  - AI Skill Search Trend Synthesizer                        │
+│  - Pydantic Schema Validation & OpenAPI Spec                │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-## 2. Design System & UI Specifications
-- **Style Archetype:** {payload.design_references}
-- **Color Palette:**
-  - Dark Mode Background: `#0B0F19` (Deep Obsidian Canvas)
-  - Card & Surface: `#111827` / `#1F2937` with `rgba(255,255,255,0.06)` subtle border
-  - Brand Accent: `#6366F1` (Indigo Glow) & `#10B981` (Emerald Success)
-  - Text Contrast: Minimum 4.5:1 ratio compliant with WCAG 2.1 AA
-- **Micro-Interactions:** 60fps CSS GPU-accelerated transitions for hover, typing shimmer, and dialog presentation.
+## 2. Design System & Visual Specification
+- **Design Archetype:** {payload.design_references}
+{images_ref}- **Design Tokens (CSS Variables):**
+  - `--bg-primary`: `#08090D` (Obsidian Canvas)
+  - `--bg-surface`: `#141722` / `#1C2030` (Card & Dialog Panels)
+  - `--accent-primary`: `#6366F1` (Electric Indigo / Primary CTA)
+  - `--accent-success`: `#10B981` (Emerald Verification Badge)
+  - `--text-primary`: `#F8FAFC` (High contrast, WCAG AA compliant)
+  - `--text-secondary`: `#94A3B8`
+- **Micro-Interactions:**
+  - Shimmer pulse saat AI merespons pertanyaan.
+  - Hover glow & scale transition pada skill cards.
+  - Smooth tab switching dan modal slide-up.
 
 ## 3. Data Flow & State Machine
-1. **Turn 1 (PRD Gathering):** Captures user problem statement & value proposition.
-2. **Turn 2 (UI/Design Ref):** Analyzes visual inspirations and extracts design tokens.
-3. **Turn 3 (Skill Selection):** Curates dynamic skill matrix with search trends.
-4. **Turn 4 (Artifact Packaging):** Produces downloadable `prd.md`, `list_skills.md`, and `systemdesign.md`.
+```
+[Turn 1: PRD Interview] ──► [Turn 2: Design Reference] ──► [Turn 3: Skill Curation] ──► [Turn 4: Export Artifacts]
+       │                              │                              │                            │
+       ▼                              ▼                              ▼                            ▼
+  prd_summary                   design_tokens                 skill_matrix                Download Blobs
+```
+
+## 4. Security & Quality Assurance
+- **Content Security:** Strict input sanitization against XSS.
+- **Zero-Dependency Resilience:** Aplikasi dapat berjalan 100% di browser tanpa koneksi backend bila diperlukan.
+- **Deterministic Output:** Validasi file markdown menjamin keterbacaan oleh model AI downstream.
 
 ---
-*Dokumen arsitektur ini siap digunakan sebagai acuan pengembangan tim engineering.*
+*Dokumen arsitektur ini disusun sebagai standar baku pengembangan tim.*
 """
 
     return GenerateFilesResponse(

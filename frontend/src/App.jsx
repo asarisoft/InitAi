@@ -88,7 +88,11 @@ export default function App() {
 
       setMessages(prev => [
         ...prev,
-        { role: 'assistant', content: response.reply }
+        {
+          role: 'assistant',
+          content: response.reply,
+          suggestedOptions: response.suggestedOptions || response.suggested_options
+        }
       ]);
 
       setCurrentStep(response.nextStep);
@@ -104,6 +108,10 @@ export default function App() {
     } finally {
       setIsTyping(false);
     }
+  };
+
+  const handleSelectOption = async (optionPrompt) => {
+    await handleSendMessage(optionPrompt);
   };
 
   const handleConfirmDesign = async ({ text, images }) => {
@@ -190,6 +198,7 @@ export default function App() {
             onAddCustomSkill={handleAddCustomSkill}
             onConfirmSkills={handleConfirmSkills}
             onConfirmDesign={handleConfirmDesign}
+            onSelectOption={handleSelectOption}
             projectData={projectData}
           />
 
