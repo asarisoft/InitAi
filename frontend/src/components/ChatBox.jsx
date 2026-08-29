@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import MessageItem from './MessageItem';
+import DesignRefUploader from './DesignRefUploader';
 import SkillGrid from './SkillGrid';
 import DownloadSection from './DownloadSection';
 import { IconBot } from './Icons';
@@ -12,6 +13,7 @@ export default function ChatBox({
   onToggleSkill,
   onAddCustomSkill,
   onConfirmSkills,
+  onConfirmDesign,
   projectData
 }) {
   const bottomRef = useRef(null);
@@ -40,6 +42,14 @@ export default function ChatBox({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Embedded interactive Design Reference & Image Uploader when in Step 2 */}
+      {currentStep === 2 && (
+        <DesignRefUploader
+          onConfirmDesign={onConfirmDesign}
+          initialText={projectData.designGuidelines}
+        />
       )}
 
       {/* Embedded interactive SkillGrid when reaching Step 3 */}

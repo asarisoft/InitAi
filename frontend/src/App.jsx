@@ -22,7 +22,8 @@ export default function App() {
     prdDetails: '',
     designGuidelines: '',
     targetUsers: 'Full-Stack Engineers, Product Architects, and AI Designers',
-    techStack: 'React 18, FastAPI, Docker, TailwindCSS'
+    techStack: 'React 18, FastAPI, Docker, TailwindCSS',
+    designImages: []
   });
 
   const [skills, setSkills] = useState(() => {
@@ -105,6 +106,16 @@ export default function App() {
     }
   };
 
+  const handleConfirmDesign = async ({ text, images }) => {
+    if (images && images.length > 0) {
+      setProjectData(prev => ({
+        ...prev,
+        designImages: images
+      }));
+    }
+    await handleSendMessage(text);
+  };
+
   const handleToggleSkill = (skillId) => {
     setSkills(prev => prev.map(s => {
       if (s.id === skillId) {
@@ -139,7 +150,8 @@ export default function App() {
         prdDetails: '',
         designGuidelines: '',
         targetUsers: 'Full-Stack Engineers, Product Architects, and AI Designers',
-        techStack: 'React 18, FastAPI, Docker, TailwindCSS'
+        techStack: 'React 18, FastAPI, Docker, TailwindCSS',
+        designImages: []
       });
       setSkills(JSON.parse(JSON.stringify(INITIAL_SKILLS)));
       setMessages([
@@ -177,6 +189,7 @@ export default function App() {
             onToggleSkill={handleToggleSkill}
             onAddCustomSkill={handleAddCustomSkill}
             onConfirmSkills={handleConfirmSkills}
+            onConfirmDesign={handleConfirmDesign}
             projectData={projectData}
           />
 

@@ -108,13 +108,13 @@ Sistem mengadopsi pola arsitektur **Modern Web Studio SaaS** (terinspirasi dari 
 
 ## 2. Design System & Visual Specification
 - **Design Archetype:** ${designRef}
-- **Design Tokens (CSS Variables):**
-  - \`--bg-primary\`: \`#0B0F19\` (Obsidian Canvas)
-  - \`--bg-surface\`: \`#111827\` / \`#1F2937\` (Card & Dialog Panels)
-  - \`--accent-primary\`: \`#6366F1\` (Indigo Glow / Primary CTA)
+${projectData.designImages && projectData.designImages.length > 0 ? `- **Attached Visual Assets / Mockups:** ${projectData.designImages.map(img => `\`${img.name}\` (${img.size} KB)`).join(', ')}\n` : ''}- **Design Tokens (CSS Variables):**
+  - \`--bg-primary\`: \`#08090D\` (Obsidian Canvas)
+  - \`--bg-surface\`: \`#141722\` / \`#1C2030\` (Card & Dialog Panels)
+  - \`--accent-primary\`: \`#6366F1\` (Electric Indigo / Primary CTA)
   - \`--accent-success\`: \`#10B981\` (Emerald Verification Badge)
-  - \`--text-primary\`: \`#F9FAFB\` (High contrast, WCAG AA compliant)
-  - \`--text-secondary\`: \`#9CA3AF\`
+  - \`--text-primary\`: \`#F8FAFC\` (High contrast, WCAG AA compliant)
+  - \`--text-secondary\`: \`#94A3B8\`
 - **Micro-Interactions:**
   - Shimmer pulse saat AI merespons pertanyaan.
   - Hover glow & scale transition pada skill cards.
