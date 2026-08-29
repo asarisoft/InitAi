@@ -4,6 +4,51 @@ const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 export const apiService = {
   /**
+   * Check live Gemini connection and token quota
+   */
+  async getGeminiStatus() {
+    try {
+      const response = await fetch(`${BACKEND_URL}/gemini/status`, {
+        signal: AbortSignal.timeout(2000)
+      });
+      if (response.ok) {
+        return await response.json();
+      }
+    } catch (e) {
+      // Backend or network error
+    }
+    return {
+      status: "missing_key",
+      valid: false,
+      message: "Backend offline atau GEMINI_API_KEY belum dikonfigurasi."
+    };
+  },
+
+  /**
+   * Actively test and connect a Gemini API Key live
+   */
+  async verifyGeminiKey(apiKey) {
+    try {
+      const response = await fetch(`${BACKEND_URL}/gemini/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ api_key: apiKey }),
+        signal: AbortSignal.timeout(4000)
+      });
+      if (response.ok) {
+        return await response.json();
+      }
+    } catch (e) {
+      // Error
+    }
+    return {
+      status: "error",
+      valid: false,
+      message: "Gagal memverifikasi API Key ke server."
+    };
+  },
+
+  /**
    * Fetch verified skill matrix directly from FastAPI backend
    */
   async getSkills() {

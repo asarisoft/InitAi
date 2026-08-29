@@ -1,8 +1,15 @@
 import React from 'react';
 import ThemeToggle from './ThemeToggle';
-import { IconGithub, IconExternalLink } from './Icons';
+import { IconGithub, IconExternalLink, IconSparkles } from './Icons';
 
-export default function Header({ currentStep, theme, onToggleTheme, isBackendOnline }) {
+export default function Header({
+  currentStep,
+  theme,
+  onToggleTheme,
+  isBackendOnline,
+  geminiStatus,
+  onOpenGeminiModal
+}) {
   const getStepTitle = (step) => {
     switch (step) {
       case 1: return "PRD Architecture & Scope Interview";
@@ -13,13 +20,65 @@ export default function Header({ currentStep, theme, onToggleTheme, isBackendOnl
     }
   };
 
+  const getGeminiBadge = () => {
+    if (geminiStatus?.valid) {
+      return {
+        label: "Gemini AI Active",
+        color: "var(--accent-emerald)",
+        bg: "rgba(16, 185, 129, 0.12)",
+        border: "rgba(16, 185, 129, 0.3)"
+      };
+    } else if (geminiStatus?.status === 'quota_exceeded' || geminiStatus?.status === 'invalid_key') {
+      return {
+        label: "Gemini Token Error",
+        color: "var(--accent-ruby)",
+        bg: "rgba(239, 68, 68, 0.12)",
+        border: "rgba(239, 68, 68, 0.3)"
+      };
+    }
+    return {
+      label: "Gemini Key Not Set",
+      color: "var(--accent-amber)",
+      bg: "rgba(245, 158, 11, 0.12)",
+      border: "rgba(245, 158, 11, 0.3)"
+    };
+  };
+
+  const badge = getGeminiBadge();
+
   return (
     <header className="top-header">
       <div className="header-left">
         <div className="status-pill">
           <span className="status-dot"></span>
-          <span>{isBackendOnline ? 'API Connected' : 'Studio Engine Ready'}</span>
+          <span>{isBackendOnline ? 'Backend Online' : 'Local Engine Ready'}</span>
         </div>
+
+        {/* Clickable Gemini Token Verification Pill */}
+        <button
+          type="button"
+          onClick={onOpenGeminiModal}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '6px',
+            padding: '3px 9px',
+            borderRadius: '100px',
+            fontSize: '0.72rem',
+            fontWeight: 700,
+            cursor: 'pointer',
+            backgroundColor: badge.bg,
+            color: badge.color,
+            border: `1px solid ${badge.border}`,
+            transition: 'all 0.15s ease'
+          }}
+          title="Klik untuk melihat / memasukkan Gemini API Key"
+        >
+          <IconSparkles size={12} />
+          <span>{badge.label}</span>
+          <span style={{ fontSize: '0.62rem', opacity: 0.8 }}>⚙️</span>
+        </button>
+
         <span className="breadcrumb-label">
           Step {currentStep}: {getStepTitle(currentStep)}
         </span>

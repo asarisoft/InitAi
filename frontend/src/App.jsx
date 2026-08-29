@@ -3,8 +3,10 @@ import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import ChatBox from './components/ChatBox';
 import ChatInput from './components/ChatInput';
+import GeminiKeyModal from './components/GeminiKeyModal';
 import { apiService } from './services/apiService';
 import { INITIAL_SKILLS } from './utils/defaultSkills';
+import { IconSparkles } from './components/Icons';
 
 export default function App() {
   const [theme, setTheme] = useState(() => {
@@ -15,6 +17,8 @@ export default function App() {
   const [interviewTurn, setInterviewTurn] = useState(1);
   const [isTyping, setIsTyping] = useState(false);
   const [isBackendOnline, setIsBackendOnline] = useState(false);
+  const [geminiStatus, setGeminiStatus] = useState(null);
+  const [isGeminiModalOpen, setIsGeminiModalOpen] = useState(false);
 
   const [projectData, setProjectData] = useState({
     projectName: 'InitAI Agent Project',
@@ -48,7 +52,7 @@ export default function App() {
     localStorage.setItem('initai_theme', theme);
   }, [theme]);
 
-  // Ping backend status & sync initial skills
+  // Ping backend status & sync initial skills and gemini status
   useEffect(() => {
     const checkBackend = async () => {
       try {
@@ -59,6 +63,8 @@ export default function App() {
           if (liveSkills && liveSkills.length > 0) {
             setSkills(liveSkills);
           }
+          const gStatus = await apiService.getGeminiStatus();
+          setGeminiStatus(gStatus);
         }
       } catch (e) {
         setIsBackendOnline(false);
@@ -69,6 +75,12 @@ export default function App() {
 
   const handleToggleTheme = () => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
+  const handleVerifyGeminiKey = async (apiKey) => {
+    const result = await apiService.verifyGeminiKey(apiKey);
+    setGeminiStatus(result);
+    return result;
   };
 
   const handleSendMessage = async (text) => {
@@ -192,7 +204,50 @@ export default function App() {
           theme={theme}
           onToggleTheme={handleToggleTheme}
           isBackendOnline={isBackendOnline}
+          geminiStatus={geminiStatus}
+          onOpenGeminiModal={() => setIsGeminiModalOpen(true)}
         />
+
+        {/* Gemini Token Guard Warning Banner when inactive */}
+        {geminiStatus && !geminiStatus.valid && (
+          <div style={{
+            margin: '12px 20px 0',
+            padding: '10px 14px',
+            backgroundColor: 'rgba(239, 68, 68, 0.08)',
+            border: '1px solid rgba(239, 68, 68, 0.25)',
+            borderRadius: 'var(--radius-md)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '10px',
+            fontSize: '0.76rem',
+            color: 'var(--text-primary)'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '1rem' }}>⚠️</span>
+              <div>
+                <strong>Token Gemini Belum Aktif / Kuota Habis:</strong> {geminiStatus.message}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsGeminiModalOpen(true)}
+              style={{
+                backgroundColor: 'var(--brand-primary)',
+                color: '#fff',
+                border: 'none',
+                padding: '5px 12px',
+                borderRadius: 'var(--radius-xs)',
+                fontWeight: 600,
+                fontSize: '0.72rem',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              Hubungkan Token API
+            </button>
+          </div>
+        )}
 
         <div className="workspace-content">
           <ChatBox
@@ -215,6 +270,14 @@ export default function App() {
           />
         </div>
       </main>
+
+      {/* Gemini API Key Modal */}
+      <GeminiKeyModal
+        isOpen={isGeminiModalOpen}
+        onClose={() => setIsGeminiModalOpen(false)}
+        geminiStatus={geminiStatus}
+        onVerifyKey={handleVerifyGeminiKey}
+      />
     </div>
   );
 }

@@ -11,6 +11,21 @@ def test_health_check():
     assert data["status"] == "ok"
     assert "Proactive Idea Enrichment" in data["features"]
 
+def test_gemini_status():
+    response = client.get("/gemini/status")
+    assert response.status_code == 200
+    data = response.json()
+    assert "status" in data
+    assert "valid" in data
+    assert "message" in data
+
+def test_gemini_verify_invalid():
+    response = client.post("/gemini/verify", json={"api_key": "AIzaSy_fake_test_key_12345"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["valid"] is False
+    assert data["status"] in ["invalid_key", "error"]
+
 def test_get_skills():
     response = client.get("/skills")
     assert response.status_code == 200

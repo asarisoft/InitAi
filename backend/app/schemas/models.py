@@ -64,3 +64,12 @@ class HealthResponse(BaseModel):
     app: str
     version: str
     features: List[str]
+
+class GeminiVerifyRequest(BaseModel):
+    api_key: Optional[str] = Field(None, max_length=200, description="API Key Gemini opsional untuk dites")
+
+class GeminiStatusResponse(BaseModel):
+    status: str
+    valid: bool
+    model: Optional[str] = None
+    message: str

@@ -11,20 +11,27 @@ async def handle_chat_message(req: ChatRequest):
     step = req.step
     user_input = req.message.strip()
     turn = req.interview_turn
+    project_data = req.project_data or {}
+
+    # Try real Gemini LLM live reasoning if token is active
+    gemini_live_result = None
+    if gemini_service.is_available():
+        gemini_live_result = await gemini_service.generate_live_chat_response(
+            step=step,
+            turn=turn,
+            user_message=user_input,
+            project_data=project_data,
+            conversation_history=req.conversation_history
+        )
 
     # ----------------- Step 1: PRD Interview & Proactive Idea Enrichment -----------------
     if step == 1:
         if turn == 1:
-            # 1. Try Gemini Tool Calling if GEMINI_API_KEY is configured
-            suggested_opts = None
-            if gemini_service.is_available():
-                suggested_opts = await gemini_service.call_enrichment_tool(user_input)
-
-            # 2. Fallback to built-in Intelligent Local Enrichment Engine
+            suggested_opts = gemini_live_result.get("suggested_options") if gemini_live_result else None
             if not suggested_opts:
                 suggested_opts = enrich_user_idea(user_input)
 
-            reply = (
+            reply = gemini_live_result.get("reply") if (gemini_live_result and gemini_live_result.get("reply")) else (
                 f"💡 **Ide Dasar Diterima:** *\"{user_input}\"*\n\n"
                 "Saya telah menganalisis konsep ini dan menyusun **3 alternatif arah produk & arsitektur** yang dapat memperkaya ide Anda (klik salah satu opsi di bawah atau ketik kustomisasi Anda):\n\n"
                 "--- \n"
@@ -42,7 +49,7 @@ async def handle_chat_message(req: ChatRequest):
                 suggested_options=suggested_opts
             )
         else:
-            reply = (
+            reply = gemini_live_result.get("reply") if (gemini_live_result and gemini_live_result.get("reply")) else (
                 "✅ **Informasi PRD Sudah Sangat Lengkap & Terstruktur!**\n\n"
                 "Spesifikasi inti, persona pengguna, dan batasan cakupan MVP telah berhasil disintesis ke dalam rancangan `prd.md`.\n\n"
                 "--- \n\n"
@@ -59,7 +66,7 @@ async def handle_chat_message(req: ChatRequest):
 
     # ----------------- Step 2: Visual Design System & Image References -----------------
     elif step == 2:
-        reply = (
+        reply = gemini_live_result.get("reply") if (gemini_live_result and gemini_live_result.get("reply")) else (
             f"🎯 **Analisis Gaya Desain Berhasil Dipetakan!**\n\n"
             f"Panduan visual *\"{user_input}\"* telah diekstrak ke dalam arsitektur antarmuka:\n"
             "• **Design Archetype:** Modern SaaS Web Studio (Deep Obsidian Canvas + Electric Indigo Accent)\n"
