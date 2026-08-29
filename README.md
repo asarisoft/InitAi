@@ -5,14 +5,19 @@
 ![InitAI Banner](https://img.shields.io/badge/InitAI-Studio%20v2.0-6366F1?style=for-the-badge&logo=rocket&logoColor=white)
 ![React](https://img.shields.io/badge/Frontend-React%2018%20%2B%20Vite-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![FastAPI](https://img.shields.io/badge/Backend-FastAPI%20Async-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![Docker](https://img.shields.io/badge/Container-Docker%20Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![WCAG](https://img.shields.io/badge/Accessibility-WCAG%202.1%20AA-10B981?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT%20(100%25%20Free)-10B981?style=for-the-badge&logo=open-source-initiative&logoColor=white)
+![WCAG](https://img.shields.io/badge/Accessibility-WCAG%202.1%20AA-purple?style=for-the-badge)
 
 **Platform SaaS Studio Cerdas untuk Otomasi Pembuatan PRD, Kurasi Skill Agen AI, dan Blueprint Arsitektur Sistem dalam 4 Berkas Markdown Siap Pakai.**
 
-[Panduan Memulai](#-panduan-menjalankan-aplikasi) • [Fitur Utama](#-fitur-utama) • [Alur Wizard](#-alur-kerja-3-tahap-interaktif) • [Arsitektur Sistem](#-arsitektur-sistem) • [Pengujian](#-pengujian-otomatis)
+[Panduan Memulai](#-panduan-menjalankan-aplikasi) • [Fitur Utama](#-fitur-utama) • [Alur Wizard](#-alur-kerja-3-tahap-interaktif) • [Arsitektur Sistem](#-arsitektur-sistem) • [Lisensi](#-lisensi--dukungan)
 
 </div>
+
+---
+
+> ⭐ **Dukungan Anda Sangat Berharga!**  
+> Jika project ini bermanfaat bagi Anda, jangan lupa berikan **Star (⭐)** di repositori GitHub [asarisoft/InitAi](https://github.com/asarisoft/InitAi) sebelum melakukan **Fork** atau **Clone** untuk mendukung pengembangan ekosistem open-source ini!
 
 ---
 
@@ -78,6 +83,8 @@ Menghasilkan 4 berkas markdown terstruktur yang dapat diunduh langsung via Blob 
 ---
 
 ## 🚀 Panduan Menjalankan Aplikasi
+
+> 💡 *Sebelum clone atau fork, pastikan Anda telah menekan tombol ⭐ **Star** di pojok kanan atas repositori [asarisoft/InitAi](https://github.com/asarisoft/InitAi).*
 
 ### Opsi 1: Menggunakan Launcher Script (`./run.sh` — Direkomendasikan)
 ```bash
@@ -168,6 +175,7 @@ test_backend.py::test_generate_files PASSED                  [100%]
 INITAI/
 ├── run.sh                          # Interactive multi-mode launcher
 ├── docker-compose.yml              # Docker multi-service composition
+├── LICENSE                         # MIT License (100% Free & Open-Source)
 ├── README.md                       # Dokumentasi resmi proyek
 ├── .env.example                    # Template environment variables
 ├── backend/
@@ -216,5 +224,11 @@ INITAI/
 
 ---
 
-## 📄 Lisensi & Hak Cipta
-Dikembangkan untuk repositori [asarisoft/InitAi](https://github.com/asarisoft/InitAi) oleh **ImamAsari** ([@asarisoft](https://github.com/asarisoft)).
+## 📄 Lisensi & Dukungan
+
+Project ini dirilis secara **100% Gratis dan Open-Source** di bawah naungan **[MIT License](LICENSE)**. Anda bebas menggunakan, memodifikasi, dan mendistribusikannya untuk kebutuhan personal maupun komersial.
+
+🌟 **Dukung Pengembang:**  
+Jangan lupa berikan **Star (⭐)** pada repositori [asarisoft/InitAi](https://github.com/asarisoft/InitAi) untuk mendukung update dan fitur-fitur keren selanjutnya!
+
+Dikembangkan dengan dedikasi oleh **Imam Asari** ([@asarisoft](https://github.com/asarisoft)).
