@@ -74,6 +74,7 @@ class GenerateFilesResponse(BaseModel):
     prd_md: str
     list_skills_md: str
     systemdesign_md: str
+    readme_md: str
 
 # ----------------- Dataset & Tool Calling Registry -----------------
 
@@ -334,10 +335,11 @@ def handle_chat(req: ChatRequest):
         skills_count = len(req.selected_skills) if req.selected_skills else len(DEFAULT_TREND_SKILLS)
         reply = (
             f"🎉 **Semua 3 Tahap Selesai! {skills_count} Skill Siap Dikonfigurasi.**\n\n"
-            "Seluruh artefak markdown siap diunduh:\n"
+            "Seluruh 4 berkas artefak markdown siap diunduh:\n"
             "1. `prd.md` — Product Requirements Document yang kaya & executable.\n"
             "2. `list_skills.md` — Matriks skill pilihan dengan tautan repositori GitHub & keunggulan.\n"
-            "3. `systemdesign.md` — Arsitektur sistem, skema data flow, dan design tokens UI.\n\n"
+            "3. `systemdesign.md` — Arsitektur sistem, skema data flow, dan design tokens UI.\n"
+            "4. `readme.md` — Dokumentasi proyek, tech stack, dan panduan instalasi/setup.\n\n"
             "Silakan klik tombol unduh pada panel di bawah."
         )
         return ChatResponse(
@@ -350,7 +352,7 @@ def handle_chat(req: ChatRequest):
     # ----------------- Step 4: Completed -----------------
     else:
         return ChatResponse(
-            reply="Proyek telah selesai diinisiasi! Seluruh berkas artefak markdown dapat diunduh pada panel di atas.",
+            reply="Proyek telah selesai diinisiasi! Seluruh 4 berkas artefak markdown dapat diunduh pada panel di atas.",
             next_step=4,
             interview_turn=1,
             is_step_complete=True
@@ -376,7 +378,7 @@ def generate_files(payload: GenerateFilesRequest):
   2. *Step 2 (Design References):* UI token extraction from reference URLs and attached mockups.
   3. *Step 3 (Skill Selection):* Curated AI agent skill matrix with trend search capabilities.
 - [x] **Skill Customization Engine:** Filter kategori (Development, UI/UX, Code Review, Security, DevOps) dan penambahan skill custom.
-- [x] **Zero-Friction Artifact Export:** In-memory generator untuk 3 file markdown (`prd.md`, `list_skills.md`, `systemdesign.md`).
+- [x] **Zero-Friction Artifact Export:** In-memory generator untuk 4 file markdown (`prd.md`, `list_skills.md`, `systemdesign.md`, `readme.md`).
 
 ## 4. Technical Architecture Recommendation
 - **Frontend Framework:** {payload.tech_stack.split(',')[0].strip() if ',' in payload.tech_stack else payload.tech_stack}
@@ -386,7 +388,7 @@ def generate_files(payload: GenerateFilesRequest):
 
 ## 5. Acceptance Criteria
 - [x] Web client renders with zero console errors.
-- [x] All 3 markdown files export successfully with valid Blob payloads.
+- [x] All 4 markdown files export successfully with valid Blob payloads.
 - [x] Responsive layout with instant Light/Dark mode switching.
 """
 
@@ -476,12 +478,74 @@ Sistem mengadopsi pola arsitektur **Modern Web Studio SaaS** (terinspirasi dari 
 *Dokumen arsitektur ini disusun sebagai standar baku pengembangan tim.*
 """
 
+    # 4. Generate readme.md
+    active_skills_summary = "\n".join([f"- **{s.name}** (`{s.category}`): {s.description}" for s in skills])
+    fe_tech = payload.tech_stack.split(',')[0].strip() if ',' in payload.tech_stack else payload.tech_stack
+
+    readme_content = f"""# {payload.project_name}
+
+> {payload.prd_summary}
+
+---
+
+## 📖 Ringkasan Proyek
+Proyek ini dibangun berdasarkan spesifikasi dan rancangan arsitektur yang dihasilkan dari sesi wawancara AI Web Studio InitAI.
+
+- **Target Persona:** {payload.target_users}
+- **Desain UI:** {payload.design_references}
+
+---
+
+## 🛠️ Tech Stack & Arsitektur
+- **Frontend Framework:** {fe_tech}
+- **Backend Architecture:** FastAPI (Python 3.11+, Asynchronous, Uvicorn)
+- **Containerization:** Docker & Docker Compose
+
+---
+
+## ⚡ Skill Agen AI Terintegrasi
+{active_skills_summary}
+
+---
+
+## 🚀 Panduan Memulai Cepat
+
+### 1. Menjalankan Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### 2. Menjalankan Backend
+```bash
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+uvicorn main:app --reload --port 8000
+```
+
+---
+
+## 📦 Berkas Artefak Proyek Ini
+1. `prd.md` — Product Requirements Document lengkap & executable.
+2. `list_skills.md` — Matriks skill pilihan & repositori GitHub terkait.
+3. `systemdesign.md` — Cetak biru arsitektur sistem dan spesifikasi visual UI.
+4. `readme.md` — Dokumentasi utama dan panduan setup proyek.
+
+---
+*Dihasilkan secara otomatis oleh InitAI Studio.*
+"""
+
     return GenerateFilesResponse(
         prd_md=prd_content,
         list_skills_md=skills_content,
-        systemdesign_md=sysdesign_content
+        systemdesign_md=sysdesign_content,
+        readme_md=readme_content
     )
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+

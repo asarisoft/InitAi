@@ -92,10 +92,11 @@ export class MockLlmService {
     if (step === 3) {
       return {
         reply: "🎉 **Semua 3 Tahapan Selesai! Skill & Konfigurasi Telah Disetujui.**\n\n" +
-          "Seluruh artefak markdown telah berhasil di-generate secara lengkap dan siap Anda unduh:\n" +
+          "Seluruh 4 berkas artefak markdown telah berhasil di-generate secara lengkap dan siap Anda unduh:\n" +
           "1. `prd.md` — Product Requirements Document yang kaya & executable.\n" +
           "2. `list_skills.md` — Daftar skill pilihan lengkap dengan link GitHub & keunggulan.\n" +
-          "3. `systemdesign.md` — Arsitektur sistem, skema database, dan panduan desain UI SaaS Studio.\n\n" +
+          "3. `systemdesign.md` — Arsitektur sistem, skema database, dan panduan desain UI SaaS Studio.\n" +
+          "4. `readme.md` — Dokumentasi proyek, tech stack, dan panduan setup.\n\n" +
           "Silakan klik tombol unduh pada panel di bawah ini.",
         nextStep: 4,
         nextInterviewTurn: 1,
@@ -105,7 +106,7 @@ export class MockLlmService {
 
     // Step 4: Finished state
     return {
-      reply: "Proses inisiasi proyek telah selesai! Anda dapat mengunduh 3 file markdown di bawah atau mereset wizard untuk proyek baru.",
+      reply: "Proses inisiasi proyek telah selesai! Anda dapat mengunduh 4 file markdown di bawah atau mereset wizard untuk proyek baru.",
       nextStep: 4,
       nextInterviewTurn: 1,
       isStepComplete: true

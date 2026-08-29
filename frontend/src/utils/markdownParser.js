@@ -6,7 +6,7 @@ export function generatePrdMarkdown(projectData) {
   const title = projectData.projectName || "Project InitAI";
   const idea = projectData.coreIdea || "AI Web Agent for automated software development workflow";
   const prdDetails = projectData.prdDetails || "Interactive LLM-guided workflow to generate PRD, skill requirements, and system design.";
-  const techStack = projectData.techStack || "ReactJS, FastAPI, Docker, TailwindCSS";
+  const techStack = projectData.techStack || "React 18, FastAPI, Docker, TailwindCSS";
   const targetUsers = projectData.targetUsers || "Full-Stack Developers, Product Managers, and AI Engineers";
 
   return `# Product Requirements Document (PRD) — ${title}
@@ -22,11 +22,11 @@ ${prdDetails}
 
 ## 3. Core Functional Requirements (MVP)
 - [x] **Interactive Conversational Wizard (3 Steps):**
-  1. *Step 1 (PRD Interview):* Tanya-jawab interaktif berbasis loop kecukupan info.
-  2. *Step 2 (Design References):* Ekstraksi token visual dari URL/deskripsi referensi UI.
-  3. *Step 3 (Skill Selection):* Kurasi matriks skill AI dengan simulasi tren web terkini.
+  1. *Step 1 (PRD Interview):* Proactive Idea Enrichment loop with multi-option suggestions.
+  2. *Step 2 (Design References):* UI token extraction from reference URLs and attached mockups.
+  3. *Step 3 (Skill Selection):* Curated AI agent skill matrix with trend search capabilities.
 - [x] **Skill Customization Engine:** Filter kategori (Development, UI/UX, Code Review, Security, DevOps) dan penambahan skill custom.
-- [x] **Zero-Friction Artifact Export:** Generator instan 3 file markdown (\`prd.md\`, \`list_skills.md\`, \`systemdesign.md\`).
+- [x] **Zero-Friction Artifact Export:** Generator instan 4 file markdown (\`prd.md\`, \`list_skills.md\`, \`systemdesign.md\`, \`readme.md\`).
 
 ## 4. Non-Functional Requirements & UX
 - **Performance:** Render time < 100ms, first contentful paint < 1.5s, 60fps micro-interactions.
@@ -34,7 +34,7 @@ ${prdDetails}
 - **Resilience:** Beroperasi mandiri (No-backend local fallback) dengan mock LLM engine cerdas.
 
 ## 5. Technical Specifications
-- **Frontend:** React 18 + Vite (Functional components & hooks)
+- **Frontend:** ${techStack.includes(',') ? techStack.split(',')[0].trim() : techStack} (Vite + ReactJS)
 - **Backend:** FastAPI (Python 3.11+, Asynchronous, Uvicorn)
 - **Infrastructure:** Docker multi-stage & Docker Compose
 - **Design Tokens:** Modern SaaS Web Studio (Pacdora/Figma dark-mode aesthetic)
@@ -42,7 +42,7 @@ ${prdDetails}
 ## 6. Acceptance Criteria
 - [x] Antarmuka web bebas dari console error.
 - [x] Alur 3 tahap selesai dengan konfirmasi eksplisit dari AI.
-- [x] Seluruh 3 tombol unduh menghasilkan file valid yang dapat dibaca.
+- [x] Seluruh 4 tombol unduh menghasilkan file valid yang dapat dibaca.
 `;
 }
 
@@ -54,7 +54,7 @@ export function generateListSkillsMarkdown(projectData, skillsList) {
     const advList = Array.isArray(s.advantages) ? s.advantages.map(a => `    - ${a}`).join('\n') : `    - ${s.advantages}`;
     const install = s.installGuide || "Lihat tautan repositori terkait.";
     return `### ${index + 1}. ${s.name} [\`${s.category}\`]
-- **GitHub Repository:** [${s.githubUrl}](${s.githubUrl})
+- **GitHub Repository:** [${s.githubUrl || s.github_url}](${s.githubUrl || s.github_url})
 - **Deskripsi:** ${s.description}
 - **Keunggulan & Fitur Utama:**
 ${advList}
@@ -135,6 +135,70 @@ ${projectData.designImages && projectData.designImages.length > 0 ? `- **Attache
 
 ---
 *Dokumen arsitektur ini disusun sebagai standar baku pengembangan tim.*
+`;
+}
+
+export function generateReadmeMarkdown(projectData, skillsList) {
+  const title = projectData.projectName || "Project InitAI";
+  const idea = projectData.coreIdea || "AI Web Studio Platform";
+  const prdDetails = projectData.prdDetails || "Comprehensive product blueprint generated through multi-turn AI architectural interview.";
+  const techStack = projectData.techStack || "React 18, FastAPI, Docker, TailwindCSS";
+  const designRef = projectData.designGuidelines || "Modern Dark/Light SaaS Studio";
+  const activeSkills = (skillsList && skillsList.length > 0) ? skillsList.filter(s => s.selected !== false) : [];
+
+  const skillBullets = activeSkills.map(s => `- **${s.name}** (\`${s.category}\`): ${s.description}`).join('\n');
+
+  return `# ${title}
+
+> ${idea}
+
+---
+
+## 📖 Ringkasan Proyek
+${prdDetails}
+
+---
+
+## 🛠️ Tech Stack & Arsitektur
+- **Frontend Framework:** ${techStack.includes(',') ? techStack.split(',')[0].trim() : techStack} (Vite + ReactJS)
+- **Backend Architecture:** FastAPI (Python 3.11+, Async, Uvicorn)
+- **Containerization:** Docker & Docker Compose
+- **Design System:** ${designRef}
+
+---
+
+## ⚡ Skill Agen & Toolchain Terintegrasi
+${skillBullets}
+
+---
+
+## 🚀 Panduan Memulai Cepat
+
+### 1. Menjalankan Frontend Standalone
+\`\`\`bash
+cd frontend
+npm install
+npm run dev
+\`\`\`
+Buka di browser: \`http://localhost:5173\`
+
+### 2. Menjalankan Full-Stack dengan Docker Compose
+\`\`\`bash
+docker compose up --build
+\`\`\`
+- **Frontend:** \`http://localhost:5173\`
+- **Backend API (Swagger):** \`http://localhost:8000/docs\`
+
+---
+
+## 📦 Berkas Artefak yang Disertakan
+1. \`prd.md\` — Product Requirements Document lengkap & executable.
+2. \`list_skills.md\` — Matriks kemampuan & repositori GitHub skill pilihan.
+3. \`systemdesign.md\` — Cetak biru arsitektur sistem dan spesifikasi UI.
+4. \`readme.md\` — Dokumentasi utama dan panduan deployment proyek ini.
+
+---
+*Dokumentasi ini dihasilkan secara otomatis oleh InitAI Studio.*
 `;
 }
 

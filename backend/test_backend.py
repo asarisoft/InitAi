@@ -108,3 +108,5 @@ def test_generate_files():
     assert "# Approved AI Agent Skills & Toolchain" in data["list_skills_md"]
     assert "# System Design & Architecture Blueprint" in data["systemdesign_md"]
     assert "mockup_studio.png" in data["systemdesign_md"]
+    assert "# Test Packaging Studio" in data["readme_md"]
+    assert "## 🚀 Panduan Memulai Cepat" in data["readme_md"]

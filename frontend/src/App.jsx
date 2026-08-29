@@ -34,7 +34,7 @@ export default function App() {
     {
       role: 'assistant',
       content: "Welcome to **InitAI Web Studio**.\n\n" +
-        "I will guide you through a 3-step structured architectural interview to produce production-grade specifications and deliver 3 markdown deliverables (`prd.md`, `list_skills.md`, and `systemdesign.md`).\n\n" +
+        "I will guide you through a 3-step structured architectural interview to produce production-grade specifications and deliver 4 markdown deliverables (`prd.md`, `list_skills.md`, `systemdesign.md`, and `readme.md`).\n\n" +
         "---\n\n" +
         "### 🚀 Step 1: Product Concept & Problem Statement\n" +
         "**What is the core vision or problem statement of your project?**\n" +

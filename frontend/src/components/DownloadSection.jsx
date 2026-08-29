@@ -3,6 +3,7 @@ import {
   generatePrdMarkdown,
   generateListSkillsMarkdown,
   generateSystemDesignMarkdown,
+  generateReadmeMarkdown,
   downloadMarkdownFile
 } from '../utils/markdownParser';
 import { IconDownload, IconEye, IconFileText, IconCopy, IconCheck } from './Icons';
@@ -14,6 +15,7 @@ export default function DownloadSection({ projectData, skills }) {
   const prdContent = generatePrdMarkdown(projectData);
   const skillsContent = generateListSkillsMarkdown(projectData, skills);
   const sysDesignContent = generateSystemDesignMarkdown(projectData);
+  const readmeContent = generateReadmeMarkdown(projectData, skills);
 
   const files = [
     {
@@ -36,6 +38,13 @@ export default function DownloadSection({ projectData, skills }) {
       desc: "Client/Server topology, UI design tokens, state machine, and data flows.",
       content: sysDesignContent,
       icon: "SYS"
+    },
+    {
+      name: "readme.md",
+      title: "Project README & Setup Guide",
+      desc: "Ringkasan proyek, tech stack, panduan instalasi, dan ringkasan kemampuan.",
+      content: readmeContent,
+      icon: "RME"
     }
   ];
 
@@ -62,7 +71,7 @@ export default function DownloadSection({ projectData, skills }) {
             <p>Production-grade Markdown deliverables ready for engineering handoff</p>
           </div>
           <span className="status-pill" style={{ background: 'var(--brand-surface)', color: 'var(--brand-primary)', borderColor: 'var(--brand-border)' }}>
-            ✓ 3 Files Packaged
+            ✓ 4 Files Packaged
           </span>
         </div>
 
@@ -125,7 +134,7 @@ export default function DownloadSection({ projectData, skills }) {
           onClick={handleDownloadAll}
         >
           <IconDownload size={16} />
-          <span>Download Complete Artifact Bundle (.zip / .md)</span>
+          <span>Download Complete Artifact Bundle (4 Files .md)</span>
         </button>
       </div>
 
