@@ -11,8 +11,8 @@ FALLBACK_MODELS = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-2.5-pro", "ge
 class GeminiService:
     """
     Google Gemini Native LLM & Tool Calling Service.
-    Includes active token/quota verification, auto-fallback model resolution,
-    configurable models & hyperparameters.
+    Features proactive Idea Enrichment, Deep Architectural Interrogations,
+    Active Token Verification, and Structured JSON Options.
     """
 
     def __init__(self):
@@ -88,7 +88,6 @@ class GeminiService:
                     last_error = str(model_err)
                     err_lower = last_error.lower()
                     if "404" in err_lower or "not found" in err_lower or "no longer available" in err_lower:
-                        # Try next model candidate
                         continue
                     elif "quota" in err_lower or "429" in err_lower or "resource_exhausted" in err_lower:
                         return {
@@ -131,7 +130,7 @@ class GeminiService:
         conversation_history: List[Any]
     ) -> Optional[Dict[str, Any]]:
         """
-        Executes real Gemini LLM reasoning using configured model & generation parameters with auto-retry.
+        Executes real Gemini LLM reasoning using configured model & generation parameters with deep idea enrichment.
         """
         if not self.is_available():
             return None
@@ -140,28 +139,36 @@ class GeminiService:
         from google.genai import types
 
         system_instruction = (
-            "Anda adalah InitAI Architect, seorang Principal Software Architect & Product Strategist kelas dunia. "
-            "Tugas Anda adalah mewawancarai pengguna dalam 3 tahap terstruktur untuk merumuskan PRD, panduan UI/UX, dan arsitektur software. "
-            "Berikan respons cerdas, kritis, mendalam, tanpa basa-basi generic AI slop. "
-            "Gunakan format Markdown yang rapi dan profesional."
+            "Anda adalah InitAI Principal Architect & Chief Product Strategist kelas dunia. "
+            "Tugas Anda BUKAN sekadar mengulang perkataan user atau memberi template statis. "
+            "Tugas Anda adalah MEMPERKAYA ide user, menantang asumsi produk secara kritis, menemukan blindspot teknis, "
+            "dan mengajukan 4-5 pertanyaan mendalam yang sangat spesifik untuk domain produk user. "
+            "Gunakan bahasa Indonesia yang profesional, berwawasan luas, dan format Markdown yang rapi."
         )
 
         candidate_models = self._get_candidate_models()
 
         for model_candidate in candidate_models:
             try:
-                # Step 1: Idea Enrichment & Options Generation
+                # Step 1 Turn 1: Deep Idea Enrichment & Probing Questions
                 if step == 1 and turn == 1:
                     prompt = (
-                        f"User mengajukan ide proyek: '{user_message}'\n\n"
-                        "Lakukan analisis mendalam terhadap problem statement ini. Berikan ulasan singkat (2 paragraf), lalu usulkan 3 variasi konsep arsitektur & MVP yang bisa dipilih user.\n"
-                        "Kembalikan output dalam format JSON dengan schema:\n"
+                        f"User mengajukan ide inisiasi produk software:\n\"\"\"{user_message}\"\"\"\n\n"
+                        "Lakukan analisis mendalam dan perkaya ide ini. Susun respon dengan format Markdown:\n"
+                        "### 💡 **1. Analisis Visi & Peluang Unik**\n"
+                        "Jelaskan analisis tajam mengenai potensi pasar, diferensiasi nilai produk, dan arsitektur solusinya.\n\n"
+                        "### ⚠️ **2. Blindspots & Risiko Tersembunyi**\n"
+                        "Uraikan 3 risiko teknis, edge case data, integrasi pihak ketiga, atau friksi operasional yang mungkin belum terpikirkan oleh inisiator proyek.\n\n"
+                        "### ❓ **3. 5 Pertanyaan Kritis untuk Menajamkan PRD**\n"
+                        "Buat 5 pertanyaan berbobot dan sangat spesifik terhadap domain ide user (misal: model monetisasi, integrasi API khusus, regulasi, beban concurrency, penanganan anomali).\n\n"
+                        "Usulkan juga **3 alternatif konsep arsitektur & MVP** yang konkret dengan tech stack berbeda (misal: Lean MVP, Real-time Collaborative, Enterprise Scale).\n\n"
+                        "Kembalikan output WAJIB dalam format JSON murni:\n"
                         "{\n"
-                        "  \"reply\": \"Teks analisis dan pertanyaan pemantik berbobot dalam markdown\",\n"
+                        "  \"reply\": \"Teks ulasan lengkap markdown sesuai struktur di atas\",\n"
                         "  \"suggested_options\": [\n"
-                        "    {\"id\": \"opt-1\", \"title\": \"Judul Konsep 1\", \"description\": \"Penjelasan 1-2 kalimat\", \"prompt_payload\": \"Payload spesifikasi prompt jika user memilih opsi ini\", \"badge\": \"Kategori\"},\n"
-                        "    {\"id\": \"opt-2\", \"title\": \"Judul Konsep 2\", \"description\": \"Penjelasan 1-2 kalimat\", \"prompt_payload\": \"Payload spesifikasi prompt jika user memilih opsi ini\", \"badge\": \"Kategori\"},\n"
-                        "    {\"id\": \"opt-3\", \"title\": \"Judul Konsep 3\", \"description\": \"Penjelasan 1-2 kalimat\", \"prompt_payload\": \"Payload spesifikasi prompt jika user memilih opsi ini\", \"badge\": \"Kategori\"}\n"
+                        "    {\"id\": \"opt-1\", \"title\": \"Judul Konsep 1\", \"description\": \"Penjelasan strategi & tech stack\", \"prompt_payload\": \"Payload jawaban lengkap jika opsi ini dipilih\", \"badge\": \"Lean MVP\"},\n"
+                        "    {\"id\": \"opt-2\", \"title\": \"Judul Konsep 2\", \"description\": \"Penjelasan strategi & tech stack\", \"prompt_payload\": \"Payload jawaban lengkap jika opsi ini dipilih\", \"badge\": \"Full-Scale\"},\n"
+                        "    {\"id\": \"opt-3\", \"title\": \"Judul Konsep 3\", \"description\": \"Penjelasan strategi & tech stack\", \"prompt_payload\": \"Payload jawaban lengkap jika opsi ini dipilih\", \"badge\": \"Enterprise\"}\n"
                         "  ]\n"
                         "}"
                     )
@@ -188,13 +195,17 @@ class GeminiService:
                             "data_extracted": {"core_idea": user_message}
                         }
 
-                # Step 1 Turn 2: Synthesize PRD
+                # Step 1 Turn 2: Synthesize PRD Architecture & Scope
                 elif step == 1 and turn >= 2:
                     prompt = (
-                        f"Ide Awal: {project_data.get('coreIdea', '')}\n"
-                        f"Jawaban Detail User: {user_message}\n\n"
-                        "Sintesis informasi di atas menjadi kesimpulan PRD yang matang. "
-                        "Konfirmasikan bahwa spesifikasi sudah sangat matang, lalu persilakan user masuk ke Tahap 2 (Referensi Desain Visual & UI/UX)."
+                        f"Ide Awal Proyek:\n\"\"\"{project_data.get('coreIdea', '')}\"\"\"\n\n"
+                        f"Jawaban Detail & Pilihan Spesifikasi User:\n\"\"\"{user_message}\"\"\"\n\n"
+                        "Sintesiskan seluruh keputusan di atas menjadi **Ringkasan Eksekutif PRD yang Matang & Komprehensif**:\n"
+                        "• **Executive Summary:** Ringkasan nilai produk.\n"
+                        "• **User Personas & Primary Use Cases:** Siapa pemakai utama dan workflow-nya.\n"
+                        "• **MVP Scope (Fase 1 vs Fase 2):** Batasan fitur inti yang harus dirilis pertama.\n"
+                        "• **Technical Acceptance Criteria:** Syarat teknis minimum yang harus dipenuhi.\n\n"
+                        "Akhiri dengan konfirmasi bahwa PRD telah terkunci dan persilakan user masuk ke **Tahap 2: Referensi Desain Visual & UI/UX Specification**."
                     )
 
                     response = self.client.models.generate_content(
@@ -215,12 +226,15 @@ class GeminiService:
                             "data_extracted": {"prd_details": user_message}
                         }
 
-                # Step 2: Design Reference Analysis
+                # Step 2: Visual Design System & UI Tokens
                 elif step == 2:
                     prompt = (
-                        f"User memberikan panduan visual & referensi UI: '{user_message}'\n\n"
-                        "Analisis gaya visual ini (misal: palette, layout topology, micro-interactions, WCAG AA contrast). "
-                        "Jelaskan bagaimana desain ini akan diimplementasikan ke dalam arsitektur SaaS studio modern, lalu persilakan user ke Tahap 3 (Kurasi Skill Agen AI)."
+                        f"User memberikan panduan visual & referensi UI:\n\"\"\"{user_message}\"\"\"\n\n"
+                        "Lakukan analisis mendalam terhadap estetika antarmuka ini:\n"
+                        "• **Design Archetype:** Pola visual (misal: Modern Dark Studio, Linear-minimalist, Glassmorphism).\n"
+                        "• **Color Tokens & WCAG Contrast:** Rekomendasi palet warna (Obsidian, Indigo, Emerald) dengan standar aksesibilitas WCAG 2.1 AA.\n"
+                        "• **Layout Topology & Micro-interactions:** Tata letak kanvas workspace dan transisi 60fps.\n\n"
+                        "Konfirmasikan bahwa panduan desain telah dipetakan ke dalam `systemdesign.md`, lalu persilakan user masuk ke **Tahap 3: Kurasi Matriks Skill Agen AI**."
                     )
 
                     response = self.client.models.generate_content(
