@@ -60,7 +60,16 @@ export default function MessageItem({ message, onSelectOption }) {
   };
 
   const formatInlineMarkdown = (text) => {
-    return text
+    // 1. Sanitize raw HTML characters first to prevent XSS (OWASP A03 / Zero-Trust)
+    const escaped = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
+    // 2. Safely apply styling tags
+    return escaped
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
       .replace(/`([^`]+)`/g, '<code>$1</code>');
